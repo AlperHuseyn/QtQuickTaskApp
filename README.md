@@ -76,24 +76,20 @@ cmake --build .
 ./QtQuickTaskApp
 ```
 
-### Running with Accessibility Enabled (for automation/testing)
+**Note:** Accessibility is **enabled by default** for automation and screen reader support.
 
-**Option 1: Command-Line Flag (Recommended)**
+### Disabling Accessibility (if needed)
+
+If you need to disable accessibility for performance reasons:
+
 ```bash
-./QtQuickTaskApp --accessibility
-# or short form
-./QtQuickTaskApp -a
+./QtQuickTaskApp --no-accessibility
 ```
 
-**Option 2: Environment Variable**
+Or set the environment variable to 0:
 ```bash
-# Linux/macOS
-export QT_ACCESSIBILITY=1
+export QT_ACCESSIBILITY=0  # Linux/macOS
 ./QtQuickTaskApp
-
-# Windows
-set QT_ACCESSIBILITY=1
-QtQuickTaskApp.exe
 ```
 
 For automated testing with Robot Framework and pywinauto, see [AUTOMATION_GUIDE.md](AUTOMATION_GUIDE.md).

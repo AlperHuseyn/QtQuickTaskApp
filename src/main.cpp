@@ -10,21 +10,22 @@ static QObject* settingsStoreSingletonProvider(QQmlEngine*, QJSEngine*) {
 }
 
 int main(int argc, char *argv[]) {
-    // Enable accessibility if QT_ACCESSIBILITY env var is set or --accessibility flag is passed
+    // Enable accessibility by default for automation and screen reader support
     // NOTE: This must be done BEFORE QGuiApplication is created, but QCommandLineParser requires
     // QGuiApplication to exist. Therefore, we do a simple manual parse first, then set up the
     // proper QCommandLineParser later for help text and documentation.
-    bool accessibilityRequested = qEnvironmentVariableIsSet("QT_ACCESSIBILITY");
     
-    // Quick check for --accessibility flag in argv before QGuiApplication
+    // Check if user explicitly disabled accessibility with --no-accessibility flag
+    bool accessibilityDisabled = false;
     for (int i = 1; i < argc; ++i) {
-        if (QString(argv[i]) == "--accessibility" || QString(argv[i]) == "-a") {
-            accessibilityRequested = true;
+        if (QString(argv[i]) == "--no-accessibility") {
+            accessibilityDisabled = true;
             break;
         }
     }
     
-    if (accessibilityRequested) {
+    // Enable accessibility by default unless explicitly disabled or already set
+    if (!accessibilityDisabled && !qEnvironmentVariableIsSet("QT_ACCESSIBILITY")) {
         qputenv("QT_ACCESSIBILITY", "1");
     }
     
@@ -36,15 +37,14 @@ int main(int argc, char *argv[]) {
     app.setApplicationName("QtQuickTaskApp");
     
     // Set up command line parser for help text and documentation
-    // Note: The accessibility flag was already parsed above before QGuiApplication creation
     QCommandLineParser parser;
     parser.setApplicationDescription("QtQuickTaskApp - A task management application");
     parser.addHelpOption();
     parser.addVersionOption();
     
-    QCommandLineOption accessibilityOption(QStringList() << "a" << "accessibility",
-        "Enable accessibility support for automation tools and screen readers");
-    parser.addOption(accessibilityOption);
+    QCommandLineOption noAccessibilityOption("no-accessibility",
+        "Disable accessibility support (enabled by default)");
+    parser.addOption(noAccessibilityOption);
     
     parser.process(app);
 

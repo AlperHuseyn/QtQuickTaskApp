@@ -2,20 +2,33 @@
 
 This document explains how to automate testing of QtQuickTaskApp using Robot Framework and pywinauto.
 
-## Prerequisites
+## Important: Accessibility is Enabled by Default
 
-### 1. Enable Qt Accessibility
+**QtQuickTaskApp now has accessibility enabled by default**, making it immediately ready for automation testing with Robot Framework, pywinauto, and screen readers. No special configuration is required!
 
-Qt's accessibility framework must be enabled for automation to work. There are three ways to do this:
-
-#### Option A: Command-Line Flag (Recommended for automation)
+If you need to disable accessibility for any reason, use:
 ```bash
-./QtQuickTaskApp --accessibility
-# or
-./QtQuickTaskApp -a
+./QtQuickTaskApp --no-accessibility
 ```
 
-#### Option B: Environment Variable
+## Prerequisites
+
+### 1. Qt Accessibility (Already Enabled!)
+
+The application automatically enables Qt's accessibility framework on startup. You can simply start the application normally:
+
+```bash
+./QtQuickTaskApp
+```
+
+**Optional:** You can still explicitly control accessibility using these methods:
+
+#### Disable Accessibility
+```bash
+./QtQuickTaskApp --no-accessibility
+```
+
+#### Force Enable via Environment Variable (if overriding system settings)
 ```bash
 # Linux/macOS
 export QT_ACCESSIBILITY=1
@@ -25,11 +38,6 @@ export QT_ACCESSIBILITY=1
 set QT_ACCESSIBILITY=1
 QtQuickTaskApp.exe
 ```
-
-#### Option C: Programmatically in Test Setup
-Set the environment variable before starting the application process (see examples below).
-
-**Note:** The accessibility flag must be set **before** the application starts, not after.
 
 ### 2. Install Required Tools
 
@@ -93,7 +101,7 @@ sudo apt-get install accerciser
 accerciser
 ```
 
-Run your application with `QT_ACCESSIBILITY=1` and use these tools to verify that all elements are visible in the accessibility tree with their assigned names.
+Run your application and use these tools to verify that all elements are visible in the accessibility tree with their assigned names.
 
 ## Example Robot Framework Test
 
@@ -106,31 +114,9 @@ Library    Process
 ${APP_PATH}    /path/to/QtQuickTaskApp
 
 *** Test Cases ***
-Login And Add Task - Method 1 (Using Command-Line Flag)
+Login And Add Task
     [Documentation]    Test login flow and adding a task
-    Start Process    ${APP_PATH}    --accessibility    alias=app
-    Sleep    2s    # Wait for app to start
-    
-    # Login
-    Input Text To Element    usernameField    TestUser
-    Click Element    loginButton
-    Sleep    1s    # Wait for navigation
-    
-    # Add Task
-    Input Text To Element    taskInput    Buy groceries
-    Click Element    addTaskButton
-    Sleep    0.5s
-    
-    # Verify task was added
-    Element Should Be Visible    taskItem_0
-    Element Text Should Be    taskTitle_0    Buy groceries
-    
-    # Cleanup
-    Terminate Process    app
-
-Login And Add Task - Method 2 (Using Environment Variable)
-    [Documentation]    Test login flow and adding a task
-    Set Environment Variable    QT_ACCESSIBILITY    1
+    # No special flags needed - accessibility is enabled by default!
     Start Process    ${APP_PATH}    alias=app
     Sleep    2s    # Wait for app to start
     
@@ -176,14 +162,14 @@ Clear Completed Tasks
 
 ## Example pywinauto Script (Windows)
 
-### Method 1: Using Command-Line Flag (Recommended)
+**Note:** Accessibility is enabled by default, so you can simply start the application normally!
 
 ```python
 import time
 from pywinauto.application import Application
 
-# Start the application with accessibility flag
-app = Application(backend='uia').start('QtQuickTaskApp.exe --accessibility')
+# Start the application - accessibility is enabled by default!
+app = Application(backend='uia').start('QtQuickTaskApp.exe')
 main_window = app.window(title_re='.*QtQuickTaskApp.*')
 
 # Wait for window to be ready
@@ -224,68 +210,16 @@ clear_button.click()
 print("Test completed successfully!")
 ```
 
-### Method 2: Using Environment Variable
-
-```python
-import os
-import time
-import subprocess
-from pywinauto.application import Application
-
-# Set environment variable before starting the app
-env = os.environ.copy()
-env['QT_ACCESSIBILITY'] = '1'
-
-# Start the application with modified environment
-process = subprocess.Popen(['QtQuickTaskApp.exe'], env=env)
-time.sleep(2)  # Wait for app to start
-
-# Connect to the running application
-app = Application(backend='uia').connect(title_re='.*QtQuickTaskApp.*')
-main_window = app.window(title_re='.*QtQuickTaskApp.*')
-
-# Wait for window to be ready
-main_window.wait('ready', timeout=10)
-
-# ... rest of the test code
-```
-
-### Method 3: Using pywinauto's start() with env parameter
-
-```python
-import os
-import time
-from pywinauto.application import Application
-
-# Prepare environment with QT_ACCESSIBILITY
-env = os.environ.copy()
-env['QT_ACCESSIBILITY'] = '1'
-
-# Start application with custom environment
-# Note: This may not work with all pywinauto versions
-import subprocess
-process = subprocess.Popen(
-    ['QtQuickTaskApp.exe'],
-    env=env,
-    creationflags=subprocess.CREATE_NEW_CONSOLE
-)
-time.sleep(2)
-
-# Connect to the application
-app = Application(backend='uia').connect(title_re='.*QtQuickTaskApp.*')
-main_window = app.window(title_re='.*QtQuickTaskApp.*')
-```
-
 ## Linux AT-SPI Example
 
-### Method 1: Using Command-Line Flag (Recommended)
+**Note:** Accessibility is enabled by default!
 
 ```python
 import time
 import subprocess
 
-# Start application with accessibility flag
-process = subprocess.Popen(['./QtQuickTaskApp', '--accessibility'])
+# Start application - accessibility is enabled by default!
+process = subprocess.Popen(['./QtQuickTaskApp'])
 time.sleep(2)
 
 # Use pyatspi2 to interact with elements
@@ -305,54 +239,18 @@ if app:
     # ... (interact with elements using AT-SPI)
 ```
 
-### Method 2: Using Environment Variable
-
-```python
-import os
-import time
-import subprocess
-
-# Set environment variable and start app
-env = os.environ.copy()
-env['QT_ACCESSIBILITY'] = '1'
-
-process = subprocess.Popen(['./QtQuickTaskApp'], env=env)
-time.sleep(2)
-
-# Use pyatspi2 to interact with elements
-import pyatspi
-
-# Find the application
-desktop = pyatspi.Registry.getDesktop(0)
-app = None
-for child in desktop:
-    if 'QtQuickTaskApp' in child.name:
-        app = child
-        break
-
-if app:
-    # Find username field by accessible name
-    # ... (interact with elements using AT-SPI)
-```
-
 ### Complete Test Example with pytest
 
 ```python
-import os
 import time
 import subprocess
 import pytest
 
 @pytest.fixture
 def app_process():
-    """Fixture to start and stop the application with accessibility enabled"""
-    # Method 1: Using command-line flag
-    process = subprocess.Popen(['./QtQuickTaskApp', '--accessibility'])
-    
-    # Or Method 2: Using environment variable
-    # env = os.environ.copy()
-    # env['QT_ACCESSIBILITY'] = '1'
-    # process = subprocess.Popen(['./QtQuickTaskApp'], env=env)
+    """Fixture to start and stop the application"""
+    # Accessibility is enabled by default!
+    process = subprocess.Popen(['./QtQuickTaskApp'])
     
     time.sleep(2)  # Wait for app to start
     yield process
@@ -378,60 +276,58 @@ def test_login_and_add_task(app_process):
 
 ```
 
-## Programmatic Setup Summary
+## Accessibility Configuration
 
-For test automation frameworks, there are **two recommended ways** to enable accessibility programmatically:
+### Default Behavior
+**Accessibility is now enabled by default!** Simply start the application normally:
 
-### ✅ Recommended: Use Command-Line Flag
 ```bash
-./QtQuickTaskApp --accessibility
-# or
-./QtQuickTaskApp -a
+./QtQuickTaskApp
 ```
 
-**Advantages:**
-- Clean and explicit
-- No environment variable manipulation needed
-- Works consistently across all platforms
-- Easier to debug
-
-**Examples:**
 ```python
 # Python/subprocess
-subprocess.Popen(['./QtQuickTaskApp', '--accessibility'])
+subprocess.Popen(['./QtQuickTaskApp'])
 
 # Robot Framework
-Start Process    ${APP_PATH}    --accessibility
+Start Process    ${APP_PATH}
 ```
 
-### ✅ Alternative: Set Environment Variable Before Process Start
+### Disabling Accessibility (if needed)
+If you need to disable accessibility for performance testing or other reasons:
+
+```bash
+./QtQuickTaskApp --no-accessibility
+```
+
+### Advanced: Manual Control via Environment Variable
+You can still override the default behavior using environment variables:
+
 ```python
-# Python
+# Force enable (though already enabled by default)
 env = os.environ.copy()
 env['QT_ACCESSIBILITY'] = '1'
 subprocess.Popen(['./QtQuickTaskApp'], env=env)
+
+# Force disable
+env = os.environ.copy()
+env['QT_ACCESSIBILITY'] = '0'
+subprocess.Popen(['./QtQuickTaskApp'], env=env)
 ```
-
-**Advantages:**
-- Works with older versions of the app
-- Standard Qt approach
-
-**Note:** Setting `os.environ['QT_ACCESSIBILITY'] = '1'` in the test script **will not work** if you then call `Application.start()` because the variable must be set in the child process's environment, not the parent test process.
 
 ## Tips for Successful Automation
 
-1. **Choose the right method**: Use `--accessibility` flag (recommended) or set environment variable before process start
-2. **Do NOT set environment after app starts** - it's too late, accessibility must be enabled at startup
-3. **Use unique Accessible.name values** - already implemented in this app
-4. **Add delays** after actions for UI updates
-5. **Use Inspect.exe/Accerciser** to verify element visibility
-6. **Consider dynamic elements** - task items use index-based naming (taskItem_0, taskItem_1, etc.)
-7. **Test on target platform** - accessibility differs between Windows/Linux/macOS
+1. **No special setup needed** - accessibility is enabled by default!
+2. **Use unique Accessible.name values** - already implemented in this app
+3. **Add delays** after actions for UI updates
+4. **Use Inspect.exe/Accerciser** to verify element visibility
+5. **Consider dynamic elements** - task items use index-based naming (taskItem_0, taskItem_1, etc.)
+6. **Test on target platform** - accessibility differs between Windows/Linux/macOS
 
 ## Troubleshooting
 
 ### Elements Not Visible
-- Verify `QT_ACCESSIBILITY=1` is set
+- Accessibility should be enabled by default - verify the app started normally
 - Check Qt version supports accessibility (Qt 5.15+)
 - Use inspection tools to verify accessibility tree
 
