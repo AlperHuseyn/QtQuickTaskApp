@@ -77,8 +77,17 @@ cmake --build .
 ```
 
 ### Running with Accessibility Enabled (for automation/testing)
+
+**Option 1: Command-Line Flag (Recommended)**
 ```bash
-# Linux
+./QtQuickTaskApp --accessibility
+# or short form
+./QtQuickTaskApp -a
+```
+
+**Option 2: Environment Variable**
+```bash
+# Linux/macOS
 export QT_ACCESSIBILITY=1
 ./QtQuickTaskApp
 
