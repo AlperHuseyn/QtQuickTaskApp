@@ -239,7 +239,7 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: 50
             font.pixelSize: 16
-            enabled: controller && controller.model.hasCompletedTasks()
+            enabled: controller && controller.model && controller.model.hasCompletedTasks()
 
             background: Rectangle {
                 radius: 8
