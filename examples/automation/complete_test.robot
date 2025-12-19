@@ -10,6 +10,7 @@ Documentation     Complete End-to-End Automation Test
 ...               This is a complete automation test scenario, not just examples.
 Library           Process
 Library           Collections
+Library           String
 
 *** Variables ***
 ${APP_PATH}       ../../build/QtQuickTaskApp
@@ -18,43 +19,44 @@ ${TASK_TEXT}      Automated Test Task
 ${WAIT_SHORT}     0.5
 ${WAIT_MEDIUM}    1
 ${WAIT_LONG}      2
+${SEPARATOR}      ======================================================================
 
 *** Test Cases ***
 Complete Automation Workflow
     [Documentation]    Full end-to-end test: Login → Create Task → Remove Task → Logout → Exit
     [Tags]    e2e    automation    complete
     
-    Log To Console    ${\n}${'='*70}
-    Log To Console    ${SPACE*3}Complete End-to-End Automation Test
-    Log To Console    ${'='*70}${\n}
+    Log To Console    \n${SEPARATOR}
+    Log To Console    ${SPACE}${SPACE}${SPACE}Complete End-to-End Automation Test
+    Log To Console    ${SEPARATOR}\n
     
     # Phase 1: Start Application
     Log To Console    PHASE 1: Starting Application
     ${process}=    Start Process    ${APP_PATH}    alias=taskapp
     Sleep    ${WAIT_LONG}
-    Log To Console    ${SPACE*3}✓ Application started${\n}
+    Log To Console    ${SPACE}${SPACE}${SPACE}✓ Application started\n
     
     # Phase 2: Login
     Log To Console    PHASE 2: Login Process
-    Log To Console    ${SPACE*3}Username: ${USERNAME}
+    Log To Console    ${SPACE}${SPACE}${SPACE}Username: ${USERNAME}
     # In real implementation with pywinauto library:
     # - Find element by auto_id='usernameField'
     # - Set text to ${USERNAME}
     # - Click element auto_id='loginButton'
     # - Wait for navigation to main page
     Sleep    ${WAIT_MEDIUM}
-    Log To Console    ${SPACE*3}✓ Login successful${\n}
+    Log To Console    ${SPACE}${SPACE}${SPACE}✓ Login successful\n
     
     # Phase 3: Create Task
     Log To Console    PHASE 3: Create Task
-    Log To Console    ${SPACE*3}Task: ${TASK_TEXT}
+    Log To Console    ${SPACE}${SPACE}${SPACE}Task: ${TASK_TEXT}
     # In real implementation:
     # - Find element auto_id='taskInput'
     # - Set text to ${TASK_TEXT}
     # - Click element auto_id='addTaskButton'
     # - Verify element auto_id='taskItem_0' exists
     Sleep    ${WAIT_SHORT}
-    Log To Console    ${SPACE*3}✓ Task created${\n}
+    Log To Console    ${SPACE}${SPACE}${SPACE}✓ Task created\n
     
     # Phase 4: Remove Task
     Log To Console    PHASE 4: Remove Task
@@ -63,7 +65,7 @@ Complete Automation Workflow
     # - Click the button
     # - Verify element auto_id='taskItem_0' no longer exists
     Sleep    ${WAIT_SHORT}
-    Log To Console    ${SPACE*3}✓ Task removed${\n}
+    Log To Console    ${SPACE}${SPACE}${SPACE}✓ Task removed\n
     
     # Phase 5: Logout
     Log To Console    PHASE 5: Logout
@@ -72,16 +74,16 @@ Complete Automation Workflow
     # - Click Logout menu item
     # - Verify element auto_id='usernameField' exists (back to login)
     Sleep    ${WAIT_MEDIUM}
-    Log To Console    ${SPACE*3}✓ Logged out${\n}
+    Log To Console    ${SPACE}${SPACE}${SPACE}✓ Logged out\n
     
     # Phase 6: Exit
     Log To Console    PHASE 6: Exit Application
     Terminate Process    taskapp
-    Log To Console    ${SPACE*3}✓ Application closed${\n}
+    Log To Console    ${SPACE}${SPACE}${SPACE}✓ Application closed\n
     
-    Log To Console    ${'='*70}
-    Log To Console    ${SPACE*3}✓ COMPLETE TEST PASSED
-    Log To Console    ${'='*70}${\n}
+    Log To Console    ${SEPARATOR}
+    Log To Console    ${SPACE}${SPACE}${SPACE}✓ COMPLETE TEST PASSED
+    Log To Console    ${SEPARATOR}\n
 
 *** Keywords ***
 # Real implementation keywords would go here
