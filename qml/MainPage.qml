@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import TaskApp 1.0
 
 Item {
@@ -12,15 +13,15 @@ Item {
         color: "#f5f7fa"
     }
 
-    Column {
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: 20
         spacing: 20
 
         // Header
         Rectangle {
-            width: parent.width
-            height: 80
+            Layout.fillWidth: true
+            Layout.preferredHeight: 80
             color: "white"
             radius: 12
             border.color: "#e1e8ed"
@@ -53,8 +54,8 @@ Item {
 
         // Add Task Section
         Rectangle {
-            width: parent.width
-            height: 70
+            Layout.fillWidth: true
+            Layout.preferredHeight: 70
             color: "white"
             radius: 12
             border.color: "#e1e8ed"
@@ -126,8 +127,8 @@ Item {
 
         // Task List
         Rectangle {
-            width: parent.width
-            height: parent.parent.height - y - clearButton.height - 30
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             color: "white"
             radius: 12
             border.color: "#e1e8ed"
@@ -154,14 +155,14 @@ Item {
                         ColorAnimation { duration: 200 }
                     }
 
-                    Row {
+                    RowLayout {
                         anchors.fill: parent
                         anchors.margins: 10
                         spacing: 10
 
                         CheckBox {
                             id: checkbox
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
                             checked: model.done
 
                             onClicked: {
@@ -177,8 +178,8 @@ Item {
                             font.pixelSize: 16
                             color: model.done ? "#95a5a6" : "#2c3e50"
                             font.strikeout: model.done
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width - checkbox.width - removeButton.width - 30
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignVCenter
                             elide: Text.ElideRight
 
                             Behavior on color {
@@ -189,7 +190,7 @@ Item {
                         Button {
                             id: removeButton
                             text: "Remove"
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
                             font.pixelSize: 14
 
                             background: Rectangle {
@@ -235,8 +236,8 @@ Item {
         Button {
             id: clearButton
             text: "Clear Completed Tasks"
-            width: parent.width
-            height: 50
+            Layout.fillWidth: true
+            Layout.preferredHeight: 50
             font.pixelSize: 16
             enabled: controller && controller.model.hasCompletedTasks()
 

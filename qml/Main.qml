@@ -11,7 +11,6 @@ ApplicationWindow {
 
     AppController {
         id: appController
-        Component.onCompleted: load()
     }
 
     menuBar: MenuBar {
