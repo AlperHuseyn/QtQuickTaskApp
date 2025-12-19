@@ -82,8 +82,8 @@ def main():
                 for i in range(min(node.childCount, 10)):  # Limit to first 10
                     child = node.getChildAtIndex(i)
                     print_tree(child, indent + 1)
-            except:
-                pass
+            except Exception:
+                pass  # Skip inaccessible nodes
         
         print_tree(app)
         
@@ -111,8 +111,8 @@ def main():
         traceback.print_exc()
         try:
             process.terminate()
-        except:
-            pass
+        except Exception:
+            pass  # Process may already be terminated
         return 1
 
 if __name__ == "__main__":
