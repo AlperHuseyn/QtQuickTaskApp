@@ -16,7 +16,6 @@ set(SOURCES
         src/settingsstore.cpp
         src/settingsstore.h
         qml/qml.qrc
-        src/settingsstore.cpp
 )
 
 add_executable(QtQuickTaskApp ${SOURCES})
