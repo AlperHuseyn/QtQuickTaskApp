@@ -48,6 +48,13 @@ void TaskModel::clearCompleted() {
     }
 }
 
+bool TaskModel::hasCompletedTasks() const {
+    for (const TaskItem& task : m_items) {
+        if (task.done) return true;
+    }
+    return false;
+}
+
 QVector<TaskItem> TaskModel::items() const {
     return m_items;
 }

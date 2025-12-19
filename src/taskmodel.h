@@ -28,6 +28,7 @@ public:
     Q_INVOKABLE void removeTask(int row);
     Q_INVOKABLE void toggleTask(int row);
     Q_INVOKABLE void clearCompleted();
+    Q_INVOKABLE bool hasCompletedTasks() const;
 
     QVector<TaskItem> items() const;
     void setItems(const QVector<TaskItem>& items);

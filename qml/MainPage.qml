@@ -238,18 +238,7 @@ Item {
             width: parent.width
             height: 50
             font.pixelSize: 16
-            enabled: controller && hasCompletedTasks()
-
-            function hasCompletedTasks() {
-                if (!controller) return false
-                for (var i = 0; i < controller.model.rowCount(); i++) {
-                    var idx = controller.model.index(i, 0)
-                    if (controller.model.data(idx, 257)) { // DoneRole = 257
-                        return true
-                    }
-                }
-                return false
-            }
+            enabled: controller && controller.model.hasCompletedTasks()
 
             background: Rectangle {
                 radius: 8
