@@ -10,6 +10,9 @@ This script demonstrates a full automation workflow:
 
 This is a REAL automation test, not just interaction examples.
 
+NOTE: Delays have been increased (2-3 seconds between actions) so you can 
+visually see each phase of the automation happening on screen.
+
 Requirements:
   pip install pywinauto
 
@@ -71,7 +74,7 @@ def main():
         print_step(1, "Starting QtQuickTaskApp...")
         
         app = Application(backend='uia').start(app_path)
-        time.sleep(2)  # Wait for app initialization
+        time.sleep(3)  # Wait for app initialization - increased for visibility
         print("    ✓ Application started successfully\n")
         
         # ===== PHASE 2: LOGIN =====
@@ -89,7 +92,7 @@ def main():
         
         print_step(4, f"Entering username: '{test_username}'...")
         username_field.set_text(test_username)
-        time.sleep(0.5)
+        time.sleep(2)  # Increased to see the username being entered
         print(f"    ✓ Username '{test_username}' entered\n")
         
         print_step(5, "Finding and clicking Login button...")
@@ -98,7 +101,7 @@ def main():
             raise Exception("Login button not found!")
         
         login_button.click()
-        time.sleep(1.5)  # Wait for navigation to main page
+        time.sleep(3)  # Increased to see the navigation transition
         print("    ✓ Login successful - navigated to main page\n")
         
         # ===== PHASE 3: CREATE TASK =====
@@ -111,7 +114,7 @@ def main():
         
         print_step(7, f"Entering task: '{test_task}'...")
         task_input.set_text(test_task)
-        time.sleep(0.5)
+        time.sleep(2)  # Increased to see the task text being entered
         print(f"    ✓ Task text entered\n")
         
         print_step(8, "Finding and clicking Add Task button...")
@@ -120,7 +123,7 @@ def main():
             raise Exception("Add Task button not found!")
         
         add_button.click()
-        time.sleep(0.5)
+        time.sleep(2)  # Increased to see the task being created
         print("    ✓ Task created successfully\n")
         
         print_step(9, "Verifying task was created...")
@@ -140,7 +143,7 @@ def main():
         
         print_step(11, "Clicking Remove button...")
         remove_button.click()
-        time.sleep(0.5)
+        time.sleep(2)  # Increased to see the task being removed
         print("    ✓ Task removed successfully\n")
         
         print_step(12, "Verifying task was removed...")
@@ -164,14 +167,14 @@ def main():
             file_menu = main_window.child_window(title="File", control_type="MenuItem")
             if file_menu.exists():
                 file_menu.click()
-                time.sleep(0.5)
+                time.sleep(1)  # Increased to see the menu opening
                 print("    ✓ File menu opened\n")
                 
                 print_step(14, "Clicking Logout...")
                 logout_item = main_window.child_window(title="Logout", control_type="MenuItem")
                 if logout_item.exists():
                     logout_item.click()
-                    time.sleep(1)
+                    time.sleep(2)  # Increased to see the logout transition
                     print("    ✓ Logged out successfully\n")
                     
                     print_step(15, "Verifying returned to login page...")
@@ -192,7 +195,7 @@ def main():
         print_step(16, "Closing application window...")
         
         main_window.close()
-        time.sleep(1)
+        time.sleep(2)  # Increased to see the application closing
         print("    ✓ Application closed successfully\n")
         
         # ===== TEST COMPLETE =====

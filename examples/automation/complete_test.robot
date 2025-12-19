@@ -8,6 +8,9 @@ Documentation     Complete End-to-End Automation Test
 ...               5. Exit application
 ...
 ...               This is a complete automation test scenario, not just examples.
+...
+...               NOTE: Wait times increased (3-5 seconds) so you can visually
+...               observe each phase of the automation on screen.
 Library           Process
 Library           Collections
 Library           String
@@ -16,9 +19,9 @@ Library           String
 ${APP_PATH}       ../../build/QtQuickTaskApp
 ${USERNAME}       RobotTestUser
 ${TASK_TEXT}      Automated Test Task
-${WAIT_SHORT}     0.5
-${WAIT_MEDIUM}    1
-${WAIT_LONG}      2
+${WAIT_SHORT}     3
+${WAIT_MEDIUM}    5
+${WAIT_LONG}      5
 ${SEPARATOR}      ======================================================================
 
 *** Test Cases ***
