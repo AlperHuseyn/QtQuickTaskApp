@@ -24,9 +24,17 @@ int main(int argc, char *argv[]) {
         }
     }
     
-    // Enable accessibility by default unless explicitly disabled or already set
-    if (!accessibilityDisabled && !qEnvironmentVariableIsSet("QT_ACCESSIBILITY")) {
-        qputenv("QT_ACCESSIBILITY", "1");
+    // Enable accessibility by default unless explicitly disabled
+    // Note: We check if QT_ACCESSIBILITY is already set to allow users to override
+    if (!accessibilityDisabled) {
+        QByteArray currentValue = qgetenv("QT_ACCESSIBILITY");
+        // Only set if not already set, or if set to 0/false (enable by default)
+        if (currentValue.isEmpty() || currentValue == "0" || currentValue.toLower() == "false") {
+            qputenv("QT_ACCESSIBILITY", "1");
+        }
+    } else {
+        // User requested to disable - set to 0
+        qputenv("QT_ACCESSIBILITY", "0");
     }
     
     QGuiApplication app(argc, argv);
