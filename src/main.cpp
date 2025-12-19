@@ -11,7 +11,9 @@ static QObject* settingsStoreSingletonProvider(QQmlEngine*, QJSEngine*) {
 
 int main(int argc, char *argv[]) {
     // Enable accessibility if QT_ACCESSIBILITY env var is set or --accessibility flag is passed
-    // This must be done before QGuiApplication is created
+    // NOTE: This must be done BEFORE QGuiApplication is created, but QCommandLineParser requires
+    // QGuiApplication to exist. Therefore, we do a simple manual parse first, then set up the
+    // proper QCommandLineParser later for help text and documentation.
     bool accessibilityRequested = qEnvironmentVariableIsSet("QT_ACCESSIBILITY");
     
     // Quick check for --accessibility flag in argv before QGuiApplication
@@ -33,7 +35,8 @@ int main(int argc, char *argv[]) {
     app.setOrganizationDomain("myorganization.example.com");
     app.setApplicationName("QtQuickTaskApp");
     
-    // Set up command line parser for help text
+    // Set up command line parser for help text and documentation
+    // Note: The accessibility flag was already parsed above before QGuiApplication creation
     QCommandLineParser parser;
     parser.setApplicationDescription("QtQuickTaskApp - A task management application");
     parser.addHelpOption();
