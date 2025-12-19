@@ -20,6 +20,7 @@ Library           Process
 *** Variables ***
 ${SCRIPT_DIR}     ${CURDIR}
 ${TEST_SCRIPT}    ${SCRIPT_DIR}/complete_test.py
+${SEPARATOR}      ======================================================================
 
 *** Test Cases ***
 Complete Automation Workflow Using Python Script
@@ -28,9 +29,9 @@ Complete Automation Workflow Using Python Script
     ...                Watch the application window for visible actions!
     [Tags]    e2e    automation    complete
     
-    Log To Console    \n${'='*70}
+    Log To Console    \n${SEPARATOR}
     Log To Console    ${SPACE}${SPACE}${SPACE}QtQuickTaskApp - Complete End-to-End Automation Test
-    Log To Console    ${'='*70}
+    Log To Console    ${SEPARATOR}
     Log To Console    \n${SPACE}${SPACE}${SPACE}This test will show VISIBLE UI actions:
     Log To Console    ${SPACE}${SPACE}${SPACE}• Watch the application window open
     Log To Console    ${SPACE}${SPACE}${SPACE}• See username being typed
@@ -58,10 +59,10 @@ Complete Automation Workflow Using Python Script
     Should Be Equal As Integers    ${result.rc}    0
     ...    msg=Automation test failed. Check output above for details.
     
-    Log To Console    \n${'='*70}
+    Log To Console    \n${SEPARATOR}
     Log To Console    ${SPACE}${SPACE}${SPACE}✓ COMPLETE TEST PASSED
     Log To Console    ${SPACE}${SPACE}${SPACE}All UI actions were performed successfully!
-    Log To Console    ${'='*70}\n
+    Log To Console    ${SEPARATOR}\n
 
 *** Keywords ***
 # No additional keywords needed - the Python script handles everything
