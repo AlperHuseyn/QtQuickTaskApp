@@ -75,12 +75,15 @@ python atspi_demo.py
 - **Output:** Step-by-step console output with success/failure status
 
 ### `complete_test.robot` ⭐ **RECOMMENDED**
-- **Platform:** Cross-platform
-- **Framework:** Robot Framework
-- **Type:** COMPLETE END-TO-END TEST SCENARIO
-- **Workflow:** Same as complete_test.py (Login → Create → Remove → Logout → Exit)
-- **Use case:** Robot Framework version of complete automation test
-- **Note:** Shows structure and keywords for real implementation
+- **Platform:** Windows (uses complete_test.py internally)
+- **Framework:** Robot Framework wrapper around Python/pywinauto automation
+- **Type:** COMPLETE END-TO-END TEST with VISIBLE UI ACTIONS
+- **Workflow:** 
+  1. Runs complete_test.py Python script
+  2. Shows REAL UI interactions (typing, clicking, navigation)
+  3. You'll see all actions happening on screen!
+- **Use case:** Robot Framework orchestration of full automation test
+- **Advantage:** Combines Robot Framework reporting with real pywinauto UI automation
 
 ### `demo_automation.py`
 - **Platform:** Cross-platform
