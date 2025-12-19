@@ -5,6 +5,10 @@ import TaskApp 1.0
 
 Item {
     id: root
+    
+    Accessible.role: Accessible.Pane
+    Accessible.name: "mainPage"
+    Accessible.description: "Task management page"
 
     property AppController controller: null
 
@@ -41,12 +45,20 @@ Item {
                         font.pixelSize: 24
                         font.bold: true
                         color: "#2c3e50"
+                        
+                        Accessible.role: Accessible.StaticText
+                        Accessible.name: "welcomeMessage"
+                        Accessible.description: "Welcome message with username"
                     }
 
                     Text {
                         text: taskListView.count + " task(s)"
                         font.pixelSize: 14
                         color: "#7f8c8d"
+                        
+                        Accessible.role: Accessible.StaticText
+                        Accessible.name: "taskCounter"
+                        Accessible.description: "Number of tasks"
                     }
                 }
             }
@@ -72,6 +84,10 @@ Item {
                     height: parent.height
                     placeholderText: "What needs to be done?"
                     font.pixelSize: 16
+                    
+                    Accessible.role: Accessible.EditableText
+                    Accessible.name: "taskInput"
+                    Accessible.description: "Input field for new task"
 
                     background: Rectangle {
                         color: "#f8f9fa"
@@ -94,6 +110,11 @@ Item {
                     font.pixelSize: 16
                     font.bold: true
                     enabled: taskInput.text.trim().length > 0
+                    
+                    Accessible.role: Accessible.Button
+                    Accessible.name: "addTaskButton"
+                    Accessible.description: "Add new task"
+                    Accessible.onPressAction: if (enabled) clicked()
 
                     background: Rectangle {
                         radius: 8
@@ -140,6 +161,10 @@ Item {
                 anchors.margins: 10
                 spacing: 8
                 clip: true
+                
+                Accessible.role: Accessible.List
+                Accessible.name: "taskListView"
+                Accessible.description: "List of tasks"
 
                 model: controller ? controller.model : null
 
@@ -150,6 +175,10 @@ Item {
                     radius: 8
                     border.color: "#e1e8ed"
                     border.width: 1
+                    
+                    Accessible.role: Accessible.ListItem
+                    Accessible.name: "taskItem_" + index
+                    Accessible.description: model.title + (model.done ? " (completed)" : " (active)")
 
                     Behavior on color {
                         ColorAnimation { duration: 200 }
@@ -164,6 +193,11 @@ Item {
                             id: checkbox
                             Layout.alignment: Qt.AlignVCenter
                             checked: model.done
+                            
+                            Accessible.role: Accessible.CheckBox
+                            Accessible.name: "taskCheckbox_" + index
+                            Accessible.description: "Toggle completion for: " + model.title
+                            Accessible.onPressAction: clicked()
 
                             onClicked: {
                                 if (controller) {
@@ -181,6 +215,10 @@ Item {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
                             elide: Text.ElideRight
+                            
+                            Accessible.role: Accessible.StaticText
+                            Accessible.name: "taskTitle_" + index
+                            Accessible.description: model.title
 
                             Behavior on color {
                                 ColorAnimation { duration: 200 }
@@ -192,6 +230,11 @@ Item {
                             text: "Remove"
                             Layout.alignment: Qt.AlignVCenter
                             font.pixelSize: 14
+                            
+                            Accessible.role: Accessible.Button
+                            Accessible.name: "removeTaskButton_" + index
+                            Accessible.description: "Remove task: " + model.title
+                            Accessible.onPressAction: clicked()
 
                             background: Rectangle {
                                 radius: 6
@@ -228,6 +271,10 @@ Item {
                     font.pixelSize: 16
                     color: "#95a5a6"
                     visible: taskListView.count === 0
+                    
+                    Accessible.role: Accessible.StaticText
+                    Accessible.name: "emptyStateMessage"
+                    Accessible.description: "No tasks yet. Add your first task above!"
                 }
             }
         }
@@ -240,6 +287,11 @@ Item {
             Layout.preferredHeight: 50
             font.pixelSize: 16
             enabled: controller && controller.model && controller.model.hasCompletedTasks()
+            
+            Accessible.role: Accessible.Button
+            Accessible.name: "clearCompletedButton"
+            Accessible.description: "Clear all completed tasks"
+            Accessible.onPressAction: if (enabled) clicked()
 
             background: Rectangle {
                 radius: 8

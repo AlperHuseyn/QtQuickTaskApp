@@ -4,6 +4,10 @@ import TaskApp 1.0
 
 Item {
     id: root
+    
+    Accessible.role: Accessible.Pane
+    Accessible.name: "loginPage"
+    Accessible.description: "Login page for entering username"
 
     signal loginSuccessful()
 
@@ -26,6 +30,10 @@ Item {
             font.bold: true
             color: "white"
             anchors.horizontalCenter: parent.horizontalCenter
+            
+            Accessible.role: Accessible.StaticText
+            Accessible.name: "welcomeTitle"
+            Accessible.description: "Welcome to TaskApp"
         }
 
         Text {
@@ -34,6 +42,10 @@ Item {
             color: "white"
             opacity: 0.9
             anchors.horizontalCenter: parent.horizontalCenter
+            
+            Accessible.role: Accessible.StaticText
+            Accessible.name: "loginPrompt"
+            Accessible.description: "Please enter your name to continue"
         }
 
         Rectangle {
@@ -53,6 +65,10 @@ Item {
                 text: SettingsStore.username
 
                 onAccepted: loginButton.clicked()
+                
+                Accessible.role: Accessible.EditableText
+                Accessible.name: "usernameField"
+                Accessible.description: "Username input field"
             }
         }
 
@@ -64,6 +80,11 @@ Item {
             font.pixelSize: 18
             font.bold: true
             enabled: usernameField.text.trim().length > 0
+            
+            Accessible.role: Accessible.Button
+            Accessible.name: "loginButton"
+            Accessible.description: "Click to login with entered username"
+            Accessible.onPressAction: if (enabled) clicked()
 
             background: Rectangle {
                 radius: 8
