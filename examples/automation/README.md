@@ -20,15 +20,20 @@ cmake --build .
 
 **Full automation workflow: Login → Create Task → Remove Task → Logout → Exit**
 
+**Platform Note:** The complete end-to-end tests (`complete_test.py` and `complete_test.robot`) 
+are **Windows-only** because they use pywinauto for Qt automation. 
+
+**For Linux users:** Use `atspi_demo.py` instead (see section 3 below).
+
 #### Windows (pywinauto) - REAL AUTOMATION
 ```bash
 pip install pywinauto
 python complete_test.py
 ```
 
-#### Robot Framework - Complete Scenario
+#### Robot Framework - Complete Scenario (Windows only)
 ```bash
-pip install robotframework
+pip install robotframework pywinauto
 robot complete_test.robot
 ```
 
@@ -61,8 +66,9 @@ python atspi_demo.py
 
 ## What Each Script Does
 
-### `complete_test.py` ⭐ **RECOMMENDED**
-- **Platform:** Windows (pywinauto)
+### `complete_test.py` ⭐ **RECOMMENDED** (Windows only)
+- **Platform:** Windows only (pywinauto requires Windows for Qt automation)
+- **For Linux:** Use `atspi_demo.py` instead
 - **Type:** COMPLETE END-TO-END AUTOMATION TEST
 - **Workflow:**
   1. Start application
@@ -74,8 +80,9 @@ python atspi_demo.py
 - **Use case:** Real automated testing scenario demonstrating full workflow
 - **Output:** Step-by-step console output with success/failure status
 
-### `complete_test.robot` ⭐ **RECOMMENDED**
-- **Platform:** Windows (uses complete_test.py internally)
+### `complete_test.robot` ⭐ **RECOMMENDED** (Windows only)
+- **Platform:** Windows only (uses complete_test.py internally)
+- **For Linux:** Use `atspi_demo.py` instead
 - **Framework:** Robot Framework wrapper around Python/pywinauto automation
 - **Type:** COMPLETE END-TO-END TEST with VISIBLE UI ACTIONS
 - **Workflow:** 

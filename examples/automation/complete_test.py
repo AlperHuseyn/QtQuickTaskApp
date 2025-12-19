@@ -16,12 +16,26 @@ visually see each phase of the automation happening on screen.
 Requirements:
   pip install pywinauto
 
-Platform: Windows only
+Platform: Windows only (pywinauto requires Windows for Qt automation)
+          For Linux, see atspi_demo.py which uses AT-SPI
 """
 
 import time
 import sys
 import os
+import platform
+
+# Check platform first
+if platform.system() != "Windows":
+    print(f"Error: This script requires Windows")
+    print(f"Current platform: {platform.system()}")
+    print()
+    print("For Linux automation, use:")
+    print("  python examples/automation/atspi_demo.py")
+    print()
+    print("For cross-platform demonstration, use:")
+    print("  python examples/automation/demo_automation.py")
+    sys.exit(1)
 
 try:
     from pywinauto.application import Application
