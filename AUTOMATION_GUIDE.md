@@ -422,12 +422,11 @@ subprocess.Popen(['./QtQuickTaskApp'], env=env)
 
 1. **Choose the right method**: Use `--accessibility` flag (recommended) or set environment variable before process start
 2. **Do NOT set environment after app starts** - it's too late, accessibility must be enabled at startup
-2. **Do NOT set environment after app starts** - it's too late, accessibility must be enabled at startup
 3. **Use unique Accessible.name values** - already implemented in this app
 4. **Add delays** after actions for UI updates
-4. **Use Inspect.exe/Accerciser** to verify element visibility
-5. **Consider dynamic elements** - task items use index-based naming (taskItem_0, taskItem_1, etc.)
-6. **Test on target platform** - accessibility differs between Windows/Linux/macOS
+5. **Use Inspect.exe/Accerciser** to verify element visibility
+6. **Consider dynamic elements** - task items use index-based naming (taskItem_0, taskItem_1, etc.)
+7. **Test on target platform** - accessibility differs between Windows/Linux/macOS
 
 ## Troubleshooting
 
