@@ -5,13 +5,27 @@ import TaskApp 1.0
 ApplicationWindow {
     id: win
     visible: true
-    width: 800
-    height: 600
-    title: "QtQuickTaskApp — " + SettingsStore.username
+    width: 900
+    height: 700
+    title: "QtQuickTaskApp" + (SettingsStore.username ? " — " + SettingsStore.username : "")
+
+    AppController {
+        id: appController
+        Component.onCompleted: load()
+    }
 
     menuBar: MenuBar {
         Menu {
             title: "File"
+            Action {
+                text: "Logout"
+                enabled: stackView.currentItem !== loginPage
+                onTriggered: {
+                    SettingsStore.username = ""
+                    stackView.replace(loginPage)
+                }
+            }
+            MenuSeparator {}
             Action {
                 text: "Exit"
                 onTriggered: Qt.quit()
@@ -19,36 +33,60 @@ ApplicationWindow {
         }
     }
 
-    Item {
+    Component {
+        id: loginPage
+        LoginPage {
+            onLoginSuccessful: {
+                stackView.replace(mainPage, StackView.Transition)
+            }
+        }
+    }
+
+    Component {
+        id: mainPage
+        MainPage {
+            controller: appController
+        }
+    }
+
+    StackView {
+        id: stackView
         anchors.fill: parent
+        initialItem: SettingsStore.username ? mainPage : loginPage
 
-        Accessible.name: "Main Application Window"
-        Accessible.role: Accessible.Window
-
-        Column {
-            anchors.centerIn: parent
-            spacing: 20
-
-            Text {
-                text: SettingsStore.username
-                    ? "Welcome, " + SettingsStore.username + "!"
-                    : "Welcome!"
-                font.pixelSize: 24
+        pushEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: 300
             }
+        }
 
-            TextField {
-                placeholderText: "Enter your username"
-                text: SettingsStore.username
-                width: 300
-
-                onTextChanged: {
-                    SettingsStore.username = text
-                }
+        pushExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: 300
             }
+        }
 
-            Button {
-                text: "Save Username"
-                onClicked: console.log("Saved username:", SettingsStore.username)
+        replaceEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: 300
+            }
+        }
+
+        replaceExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: 300
             }
         }
     }
