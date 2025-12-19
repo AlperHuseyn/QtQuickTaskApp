@@ -100,18 +100,28 @@ For automated testing, see:
 
 ## Quick Automation Demo
 
-Try the included demonstration scripts:
+**Complete End-to-End Test (Login → Create Task → Remove → Logout → Exit):**
+
+```bash
+# Windows: Complete automation test
+pip install pywinauto
+python examples/automation/complete_test.py
+
+# Robot Framework: Complete test scenario
+pip install robotframework
+robot examples/automation/complete_test.robot
+```
+
+**Individual demos:**
 
 ```bash
 # Simple demo (all platforms)
 python3 examples/automation/demo_automation.py
 
-# Robot Framework test
-pip install robotframework
+# Robot Framework test structure
 robot examples/automation/demo_test.robot
 
-# Windows: Full automation demo
-pip install pywinauto
+# Windows: Step-by-step demo
 python examples/automation/pywinauto_demo.py
 ```
 

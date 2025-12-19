@@ -16,9 +16,23 @@ cmake ..
 cmake --build .
 ```
 
-### 2. Run Demo Scripts
+### 2. Run Complete End-to-End Test (Recommended)
 
-Choose the appropriate demo for your platform:
+**Full automation workflow: Login → Create Task → Remove Task → Logout → Exit**
+
+#### Windows (pywinauto) - REAL AUTOMATION
+```bash
+pip install pywinauto
+python complete_test.py
+```
+
+#### Robot Framework - Complete Scenario
+```bash
+pip install robotframework
+robot complete_test.robot
+```
+
+### 3. Run Individual Demo Scripts
 
 #### Simple Demo (All Platforms)
 ```bash
@@ -46,6 +60,27 @@ python atspi_demo.py
 ```
 
 ## What Each Script Does
+
+### `complete_test.py` ⭐ **RECOMMENDED**
+- **Platform:** Windows (pywinauto)
+- **Type:** COMPLETE END-TO-END AUTOMATION TEST
+- **Workflow:**
+  1. Start application
+  2. Login with username
+  3. Create a new task
+  4. Remove the task
+  5. Logout (return to login screen)
+  6. Exit application
+- **Use case:** Real automated testing scenario demonstrating full workflow
+- **Output:** Step-by-step console output with success/failure status
+
+### `complete_test.robot` ⭐ **RECOMMENDED**
+- **Platform:** Cross-platform
+- **Framework:** Robot Framework
+- **Type:** COMPLETE END-TO-END TEST SCENARIO
+- **Workflow:** Same as complete_test.py (Login → Create → Remove → Logout → Exit)
+- **Use case:** Robot Framework version of complete automation test
+- **Note:** Shows structure and keywords for real implementation
 
 ### `demo_automation.py`
 - **Platform:** Cross-platform
