@@ -145,6 +145,8 @@ def main():
         print_step(5, "Finding and clicking Login button...")
         # Try multiple methods to find the login button
         login_button = None
+        
+        # Method 1: Try by AutomationId
         try:
             login_button = main_window.child_window(auto_id='loginButton', control_type='Button')
             if not login_button.exists():
@@ -153,16 +155,29 @@ def main():
             pass
         
         if login_button is None:
-            # Try to find button by title/text
+            # Method 2: Try by control type only (find first Button)
             try:
-                buttons = main_window.children(control_type='Button')
-                for btn in buttons:
-                    if 'Login' in btn.window_text():
-                        login_button = btn
-                        print("    ℹ Found login button by text")
-                        break
+                login_button = main_window.child_window(control_type='Button', found_index=0)
+                if login_button.exists():
+                    print("    ℹ Found login button by control type (Button)")
             except:
                 pass
+        
+        if login_button is None or not login_button.exists():
+            # Method 3: Search through all Button controls
+            print("    ℹ Searching for all Button controls...")
+            try:
+                buttons = main_window.children(control_type='Button')
+                print(f"    ℹ Found {len(buttons)} Button control(s)")
+                for i, btn in enumerate(buttons):
+                    btn_text = btn.window_text()
+                    print(f"      - Button {i}: '{btn_text}'")
+                    if 'Login' in btn_text or i == 0:  # Use first button if text match fails
+                        login_button = btn
+                        print(f"    ℹ Using Button {i}")
+                        break
+            except Exception as e:
+                print(f"    ⚠ Error searching for Button controls: {e}")
         
         if login_button is None or not verify_element(login_button, "loginButton"):
             raise Exception("Login button not found!")
@@ -207,6 +222,8 @@ def main():
         print_step(8, "Finding and clicking Add Task button...")
         # Try multiple methods to find add button
         add_button = None
+        
+        # Method 1: Try by AutomationId
         try:
             add_button = main_window.child_window(auto_id='addTaskButton', control_type='Button')
             if not add_button.exists():
@@ -214,18 +231,21 @@ def main():
         except:
             pass
         
-        if add_button is None:
-            # Find button by text
+        if add_button is None or not add_button.exists():
+            # Method 2: Search through all Button controls
+            print("    ℹ Searching for Add button in Button controls...")
             try:
                 buttons = main_window.children(control_type='Button')
-                for btn in buttons:
+                print(f"    ℹ Found {len(buttons)} Button control(s) on main page")
+                for i, btn in enumerate(buttons):
                     btn_text = btn.window_text()
-                    if 'Add' in btn_text or '+' in btn_text:
+                    print(f"      - Button {i}: '{btn_text}'")
+                    if 'Add' in btn_text or '+' in btn_text or (i == 0 and len(buttons) <= 3):
                         add_button = btn
-                        print("    ℹ Found add button by text")
+                        print(f"    ℹ Using Button {i} as Add button")
                         break
-            except:
-                pass
+            except Exception as e:
+                print(f"    ⚠ Error searching for Button controls: {e}")
         
         if add_button is None or not verify_element(add_button, "addTaskButton"):
             raise Exception("Add Task button not found!")
@@ -245,8 +265,35 @@ def main():
         print_header("PHASE 4: Remove Task")
         print_step(10, "Finding Remove button for the task...")
         
-        remove_button = main_window.child_window(auto_id='removeTaskButton_0', control_type='Button')
-        if not verify_element(remove_button, "removeTaskButton_0"):
+        # Try multiple methods to find remove button
+        remove_button = None
+        
+        # Method 1: Try by AutomationId
+        try:
+            remove_button = main_window.child_window(auto_id='removeTaskButton_0', control_type='Button')
+            if not remove_button.exists():
+                remove_button = None
+        except:
+            pass
+        
+        if remove_button is None or not remove_button.exists():
+            # Method 2: Search for buttons near the task
+            print("    ℹ Searching for Remove button in Button controls...")
+            try:
+                buttons = main_window.children(control_type='Button')
+                print(f"    ℹ Found {len(buttons)} Button control(s)")
+                for i, btn in enumerate(buttons):
+                    btn_text = btn.window_text()
+                    print(f"      - Button {i}: '{btn_text}'")
+                    # Remove button is likely the second button (after Add button)
+                    if 'Remove' in btn_text or 'X' in btn_text or (len(buttons) >= 2 and i == 1):
+                        remove_button = btn
+                        print(f"    ℹ Using Button {i} as Remove button")
+                        break
+            except Exception as e:
+                print(f"    ⚠ Error searching for Button controls: {e}")
+        
+        if remove_button is None or not verify_element(remove_button, "removeTaskButton_0"):
             raise Exception("Remove button not found!")
         
         print_step(11, "Clicking Remove button...")
