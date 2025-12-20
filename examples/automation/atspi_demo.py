@@ -30,9 +30,18 @@ def print_step(step_num, description):
 def find_application():
     """Find the QtQuickTaskApp in the accessibility tree"""
     desktop = pyatspi.Registry.getDesktop(0)
+    
+    # Debug: List all applications in the accessibility tree
+    print("\n   Searching accessibility tree...")
+    print("   Applications found:")
     for child in desktop:
-        if 'QtQuickTaskApp' in child.name:
-            return child
+        try:
+            print(f"     - {child.name} (role: {child.getRoleName()})")
+            if 'QtQuickTaskApp' in child.name or 'QtQuick' in child.name or child.name == 'QtQuickTaskApp':
+                return child
+        except Exception as e:
+            continue
+    
     return None
 
 def main():
@@ -61,8 +70,20 @@ def main():
         print_step(2, "Finding application in accessibility tree...")
         app = find_application()
         if not app:
-            print("❌ Could not find application in accessibility tree")
-            print("   Make sure AT-SPI is enabled on your system")
+            print("\n❌ Could not find application in accessibility tree")
+            print("\n   Troubleshooting steps:")
+            print("   1. Make sure AT-SPI is enabled on your system")
+            print("      - Check if at-spi2-core is installed: dpkg -l | grep at-spi")
+            print("      - Restart at-spi-bus-launcher if needed")
+            print("   2. Qt may need a small delay to register with AT-SPI")
+            print("      - The app is running, try using accessibility tools like 'accerciser'")
+            print("   3. Check if Qt accessibility bridge is loaded:")
+            print("      - Set QT_DEBUG_PLUGINS=1 and check for 'libqatspiplugin.so'")
+            print("\n   Note: The application is still running. You can:")
+            print("   - Use 'accerciser' (GUI tool) to explore the accessibility tree")
+            print("   - Verify elements have Accessible.name properties")
+            print("\n   Keeping application open for manual inspection (30 seconds)...")
+            time.sleep(30)
             process.terminate()
             return 1
         

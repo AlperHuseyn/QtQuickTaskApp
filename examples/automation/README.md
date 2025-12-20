@@ -152,11 +152,60 @@ Error: Application not found at: ../../build/QtQuickTaskApp
 ### Elements Not Visible (Windows)
 **Solution:** Use `inspect.exe` (Windows SDK) to verify accessibility tree
 
-### Elements Not Visible (Linux)
-**Solution:** 
-1. Install accerciser: `sudo apt-get install accerciser`
-2. Run accerciser to inspect the application
-3. Verify AT-SPI is enabled on your system
+### Elements Not Visible (Linux) - AT-SPI Issues
+
+If `atspi_demo.py` cannot find the application in the accessibility tree:
+
+**Solution 1: Verify AT-SPI Setup**
+```bash
+# Check if AT-SPI is installed
+dpkg -l | grep at-spi2-core
+
+# Install if missing
+sudo apt-get install at-spi2-core
+
+# Restart AT-SPI bus launcher
+pkill at-spi-bus-launcher
+/usr/lib/at-spi2-core/at-spi-bus-launcher &
+```
+
+**Solution 2: Verify Qt Accessibility Plugin**
+```bash
+# Check if Qt accessibility bridge is installed
+dpkg -l | grep libqt5accessibility5
+
+# Install if missing (Debian/Ubuntu)
+sudo apt-get install libqt5accessibility5 qt5-accessibility
+
+# Set debug flag to see if plugin loads
+export QT_DEBUG_PLUGINS=1
+./build/QtQuickTaskApp
+
+# Look for output mentioning "libqatspiplugin.so" or "accessibility"
+```
+
+**Solution 3: Use Accerciser for Manual Inspection**
+```bash
+# Install accessibility inspector tool
+sudo apt-get install accerciser
+
+# Run accerciser
+accerciser &
+
+# Then start your app
+./build/QtQuickTaskApp
+
+# In accerciser: Look for QtQuickTaskApp in the application tree
+# Verify that UI elements with Accessible.name are visible
+```
+
+**Solution 4: Check Application Name Registration**
+The `atspi_demo.py` script now lists all applications found in the accessibility tree.
+If your app appears with a different name, the script will show it.
+
+**Note:** Even if AT-SPI discovery fails, the application IS accessible - you can verify 
+this manually with accerciser. The issue is typically with AT-SPI bus registration timing
+or system configuration, not the application's accessibility implementation.
 
 ### pywinauto Import Error
 ```
