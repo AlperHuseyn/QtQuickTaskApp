@@ -249,10 +249,20 @@ def main():
             pass
         
         if add_button is None or not add_button.exists():
-            # Method 2: Search through all Button controls
-            print("    ℹ Searching for Add button in Button controls...")
+            # Method 2: Try with found_index
             try:
-                buttons = main_window.children(control_type='Button')
+                add_button = main_window.child_window(control_type='Button', found_index=0)
+                if add_button.exists():
+                    btn_text = add_button.window_text()
+                    print(f"    ℹ Found add button by control type: '{btn_text}'")
+            except:
+                pass
+        
+        if add_button is None or not add_button.exists():
+            # Method 3: Search through all Button controls (using descendants for nested elements)
+            print("    ℹ Searching for Add button in all Button controls...")
+            try:
+                buttons = main_window.descendants(control_type='Button')
                 print(f"    ℹ Found {len(buttons)} Button control(s) on main page")
                 for i, btn in enumerate(buttons):
                     btn_text = btn.window_text()
@@ -294,10 +304,21 @@ def main():
             pass
         
         if remove_button is None or not remove_button.exists():
-            # Method 2: Search for buttons near the task
-            print("    ℹ Searching for Remove button in Button controls...")
+            # Method 2: Try with found_index
             try:
-                buttons = main_window.children(control_type='Button')
+                # Try to find Remove button by index (likely the second button after Add)
+                remove_button = main_window.child_window(control_type='Button', found_index=1)
+                if remove_button.exists():
+                    btn_text = remove_button.window_text()
+                    print(f"    ℹ Found remove button by control type: '{btn_text}'")
+            except:
+                pass
+        
+        if remove_button is None or not remove_button.exists():
+            # Method 3: Search for buttons near the task (using descendants)
+            print("    ℹ Searching for Remove button in all Button controls...")
+            try:
+                buttons = main_window.descendants(control_type='Button')
                 print(f"    ℹ Found {len(buttons)} Button control(s)")
                 for i, btn in enumerate(buttons):
                     btn_text = btn.window_text()
