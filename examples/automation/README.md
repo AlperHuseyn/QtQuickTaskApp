@@ -172,16 +172,43 @@ pkill at-spi-bus-launcher
 **Solution 2: Verify Qt Accessibility Plugin**
 ```bash
 # Check if Qt accessibility bridge is installed
-dpkg -l | grep libqt5accessibility5
+# For Qt5:
+dpkg -l | grep qt5
 
-# Install if missing (Debian/Ubuntu)
-sudo apt-get install libqt5accessibility5 qt5-accessibility
+# For Qt6:
+dpkg -l | grep qt6
+
+# Install Qt5 accessibility bridge (Debian/Ubuntu)
+# Note: Package names vary by distribution and Qt version
+sudo apt-get install qtbase5-dev libqt5gui5
+
+# The AT-SPI plugin is usually included in Qt base packages
+# If you built Qt from source, ensure plugins were built
+
+# Verify plugin exists
+find /usr/lib -name "libqatspiplugin.so" 2>/dev/null
+find /usr/lib/x86_64-linux-gnu/qt5/plugins -name "*atspi*" 2>/dev/null
 
 # Set debug flag to see if plugin loads
 export QT_DEBUG_PLUGINS=1
-./build/QtQuickTaskApp
+./build/QtQuickTaskApp 2>&1 | grep -i atspi
 
-# Look for output mentioning "libqatspiplugin.so" or "accessibility"
+# Look for lines like:
+#   "QFactoryLoader::QFactoryLoader() checking directory path..."
+#   "loaded library libqatspiplugin.so"
+```
+
+**Solution 2b: Qt May Need Explicit Platform Plugin Path**
+```bash
+# If plugin exists but doesn't load, set plugin path explicitly
+export QT_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins:$QT_PLUGIN_PATH
+export QT_QPA_PLATFORMTHEME=gtk3
+
+# Or for custom Qt builds:
+export QT_PLUGIN_PATH=/path/to/your/qt/plugins:$QT_PLUGIN_PATH
+
+# Then run the app
+./build/QtQuickTaskApp
 ```
 
 **Solution 3: Use Accerciser for Manual Inspection**
@@ -218,6 +245,83 @@ Error: pywinauto not installed
 Error: pyatspi2 not installed
 ```
 **Solution:** `pip install pyatspi2` or `sudo apt-get install python3-pyatspi`
+
+### Common Issue: "Could not find application in accessibility tree" on Ubuntu/Linux
+
+This is the most common issue with AT-SPI on Linux. Here's a step-by-step diagnosis:
+
+**Step 1: Verify the plugin file exists**
+```bash
+# Search for Qt AT-SPI plugin
+find /usr/lib -name "libqatspiplugin.so" 2>/dev/null
+find /usr/lib/x86_64-linux-gnu -name "*atspi*" 2>/dev/null
+
+# If not found, Qt was built without accessibility plugin
+# You may need to install Qt from a different source
+```
+
+**Step 2: Enable plugin debugging**
+```bash
+export QT_DEBUG_PLUGINS=1
+./build/QtQuickTaskApp 2>&1 | grep -i "atspi\|accessibility"
+
+# Look for messages like:
+#   "loaded library 'libqatspiplugin.so'"  ← Plugin loads successfully
+#   "Cannot load library"                  ← Plugin failed to load
+#   No mentions of atspi                   ← Plugin not found
+```
+
+**Step 3: Use accerciser (Visual Verification)**
+```bash
+# You already have accerciser installed - this is the BEST diagnostic tool
+accerciser &
+
+# In a new terminal:
+./build/QtQuickTaskApp
+
+# In accerciser window:
+#   → If QtQuickTaskApp appears: AT-SPI is working! The pyatspi script has a timing issue.
+#   → If it doesn't appear: Qt accessibility plugin isn't loading properly.
+```
+
+**Step 4: If plugin doesn't load (most common issue)**
+```bash
+# Option A: Set explicit plugin path
+export QT_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins
+./build/QtQuickTaskApp
+
+# Option B: Install Qt5 development packages (may include plugin)
+sudo apt-get install qtbase5-dev qtdeclarative5-dev
+
+# Option C: Build Qt with accessibility support
+# (Only if you built Qt from source without it)
+```
+
+**Step 5: Alternative - Check if this is a pyatspi timing issue**
+```bash
+# Sometimes the app registers but pyatspi misses it
+# The atspi_demo.py now waits 30 seconds for manual inspection
+python atspi_demo.py
+
+# While it's waiting, open accerciser to see if the app is there
+# If yes in accerciser but no in pyatspi → timing/bus issue, not app issue
+```
+
+**Understanding the Issue:**
+- The Qt app enables accessibility in code (you'll see it in main.cpp)
+- But Qt also needs the `libqatspiplugin.so` plugin to bridge Qt → AT-SPI
+- This plugin is sometimes not included in Qt packages or not found by Qt
+- Even if the plugin exists, Qt must find it (hence QT_PLUGIN_PATH)
+
+**Quick Check - Does Qt Have AT-SPI Support?**
+```bash
+# Check what Qt was built with
+qmake -query  # or qmake-qt5 -query
+# Look for QT_INSTALL_PLUGINS path
+
+ls -la $(qmake -query QT_INSTALL_PLUGINS)/platformaccessibility/
+# Should show libqatspiplugin.so
+```
 
 ## Next Steps
 
