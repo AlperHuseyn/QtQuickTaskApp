@@ -87,7 +87,7 @@ def main():
         print_header("PHASE 1: Start Application")
         print_step(1, "Starting QtQuickTaskApp...")
         
-        app = Application(backend='uia').start(app_path)
+        app = Application(backend='uia').start(app_path, wait_for_idle=False)
         time.sleep(3)  # Wait for app initialization - increased for visibility
         print("    ✓ Application started successfully\n")
         
