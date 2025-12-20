@@ -191,7 +191,10 @@ def main():
         print_step(6, "Finding task input field...")
         
         # Try multiple methods to find task input
+        # After page transition, need robust finding like username field
         task_input = None
+        
+        # Method 1: Try by AutomationId
         try:
             task_input = main_window.child_window(auto_id='taskInput', control_type='Edit')
             if not task_input.exists():
@@ -200,16 +203,30 @@ def main():
             pass
         
         if task_input is None:
-            # Find all Edit controls and use the visible one (should be on main page now)
+            # Method 2: Try by control type with found_index
+            # After login, we're on a new page, so try the first Edit control
             try:
-                edit_controls = main_window.children(control_type='Edit')
-                for ctrl in edit_controls:
-                    if ctrl.is_visible() and ctrl.is_enabled():
-                        task_input = ctrl
-                        print("    ℹ Found task input by searching visible Edit controls")
-                        break
+                task_input = main_window.child_window(control_type='Edit', found_index=0)
+                if task_input.exists():
+                    print("    ℹ Found task input by control type (Edit)")
             except:
                 pass
+        
+        if task_input is None or not task_input.exists():
+            # Method 3: Search through all Edit controls
+            print("    ℹ Searching for all Edit controls...")
+            try:
+                edit_controls = main_window.children(control_type='Edit')
+                print(f"    ℹ Found {len(edit_controls)} Edit control(s) on main page")
+                for i, ctrl in enumerate(edit_controls):
+                    ctrl_text = ctrl.window_text() if hasattr(ctrl, 'window_text') else ''
+                    print(f"      - Edit {i}: '{ctrl_text}'")
+                    if ctrl.is_visible() and ctrl.is_enabled():
+                        task_input = ctrl
+                        print(f"    ℹ Using Edit {i} as task input")
+                        break
+            except Exception as e:
+                print(f"    ⚠ Error searching for Edit controls: {e}")
         
         if task_input is None or not verify_element(task_input, "taskInput"):
             raise Exception("Task input field not found!")
