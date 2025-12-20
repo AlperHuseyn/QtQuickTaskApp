@@ -248,7 +248,7 @@ Error: pyatspi2 not installed
 
 ### Common Issue: "Could not find application in accessibility tree" on Ubuntu/Linux
 
-This is the most common issue with AT-SPI on Linux. Here's a step-by-step diagnosis:
+This is the most common issue with AT-SPI on Linux. **Root cause:** Ubuntu's standard Qt5 packages often don't include the `libqatspiplugin.so` accessibility plugin.
 
 **Step 1: Verify the plugin file exists**
 ```bash
@@ -256,8 +256,13 @@ This is the most common issue with AT-SPI on Linux. Here's a step-by-step diagno
 find /usr/lib -name "libqatspiplugin.so" 2>/dev/null
 find /usr/lib/x86_64-linux-gnu -name "*atspi*" 2>/dev/null
 
-# If not found, Qt was built without accessibility plugin
-# You may need to install Qt from a different source
+# Check your Qt plugin directory
+qmake -query QT_INSTALL_PLUGINS  # Shows where Qt looks for plugins
+ls -la $(qmake -query QT_INSTALL_PLUGINS)/platformaccessibility/
+
+# If the directory doesn't exist or is empty:
+# → Ubuntu's Qt5 doesn't include the accessibility plugin by default
+# → AT-SPI automation won't work without this plugin
 ```
 
 **Step 2: Enable plugin debugging**
@@ -284,18 +289,29 @@ accerciser &
 #   → If it doesn't appear: Qt accessibility plugin isn't loading properly.
 ```
 
-**Step 4: If plugin doesn't load (most common issue)**
+**Step 4: If plugin doesn't exist (Ubuntu's Qt5 limitation)**
+
+**The Reality:** Ubuntu's standard Qt5 packages (`qtbase5-dev`, `libqt5gui5`) often **do not include** the `platformaccessibility` plugin directory or `libqatspiplugin.so` file.
+
+**Options if plugin is missing:**
+
 ```bash
-# Option A: Set explicit plugin path
-export QT_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins
-./build/QtQuickTaskApp
+# Option A: Try Qt6 (may have better accessibility support)
+sudo apt-get install qt6-base-dev
+# Then rebuild your app with Qt6
 
-# Option B: Install Qt5 development packages (may include plugin)
-sudo apt-get install qtbase5-dev qtdeclarative5-dev
+# Option B: Use the cross-platform demo instead
+# This shows accessible properties without requiring AT-SPI
+python demo_automation.py
 
-# Option C: Build Qt with accessibility support
-# (Only if you built Qt from source without it)
+# Option C: Build Qt5 from source with accessibility enabled
+# (Advanced - requires compiling Qt from source with -feature-accessibility)
+
+# Option D: Use Windows for full pywinauto automation
+# Windows Qt distributions include accessibility support by default
 ```
+
+**Important:** The application HAS proper `Accessible.name` and `Accessible.role` properties - this is verified in the code. The limitation is that Ubuntu's Qt5 packages don't provide the bridge to expose these to AT-SPI.
 
 **Step 5: Alternative - Check if this is a pyatspi timing issue**
 ```bash
@@ -308,10 +324,20 @@ python atspi_demo.py
 ```
 
 **Understanding the Issue:**
-- The Qt app enables accessibility in code (you'll see it in main.cpp)
-- But Qt also needs the `libqatspiplugin.so` plugin to bridge Qt → AT-SPI
-- This plugin is sometimes not included in Qt packages or not found by Qt
-- Even if the plugin exists, Qt must find it (hence QT_PLUGIN_PATH)
+- The Qt app **does** enable accessibility in code (see main.cpp - `QAccessible::setActive(true)`)
+- The app **does** have proper `Accessible.name` and `Accessible.role` on all elements
+- **BUT** Qt needs the `libqatspiplugin.so` plugin to bridge Qt → AT-SPI on Linux
+- This plugin is **missing** from standard Ubuntu Qt5 installations
+- Without this plugin, Qt apps can't register with the AT-SPI accessibility bus
+- **The accessibility properties work on Windows** (where the plugin exists)
+
+**Verification Strategy:**
+1. ✅ Code has accessibility enabled: Check main.cpp
+2. ✅ Elements have Accessible properties: Review QML files
+3. ❌ Qt has AT-SPI bridge plugin: Missing on Ubuntu Qt5 by default
+4. Result: Accessibility works in Windows, but not exposed to AT-SPI on Linux without plugin
+
+**For your Ubuntu setup:** Use `demo_automation.py` to verify accessible properties exist, but understand that full AT-SPI automation requires a Qt build with the accessibility plugin included.
 
 **Quick Check - Does Qt Have AT-SPI Support?**
 ```bash
