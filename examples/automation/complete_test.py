@@ -183,11 +183,12 @@ def main():
             raise Exception("Login button not found!")
         
         login_button.click()
-        time.sleep(3)  # Increased to see the navigation transition
+        time.sleep(3)  # Wait for page transition animation
         print("    ✓ Login successful - navigated to main page\n")
         
         # ===== PHASE 3: CREATE TASK =====
         print_header("PHASE 3: Create Task")
+        time.sleep(2)  # Additional wait to observe the main page before finding elements
         print_step(6, "Finding task input field...")
         
         # Try multiple methods to find task input
