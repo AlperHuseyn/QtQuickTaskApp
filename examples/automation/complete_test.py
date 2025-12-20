@@ -100,8 +100,41 @@ def main():
         print("    ✓ Connected to window\n")
         
         print_step(3, "Finding username input field...")
-        username_field = main_window.child_window(auto_id='usernameField', control_type='Edit')
-        if not verify_element(username_field, "usernameField"):
+        # Try multiple methods to find the element
+        # Qt applications on Windows may not expose auto_id properly
+        username_field = None
+        try:
+            # Method 1: Try by auto_id (Accessible.name)
+            username_field = main_window.child_window(auto_id='usernameField', control_type='Edit')
+            if not username_field.exists():
+                username_field = None
+        except:
+            pass
+        
+        if username_field is None:
+            # Method 2: Try by control type only (find first Edit control)
+            try:
+                username_field = main_window.child_window(control_type='Edit', found_index=0)
+                if username_field.exists():
+                    print("    ℹ Found username field by control type (Edit)")
+            except:
+                pass
+        
+        if username_field is None or not username_field.exists():
+            # Method 3: Print all available Edit controls for debugging
+            print("    ℹ Searching for all Edit controls...")
+            try:
+                edit_controls = main_window.children(control_type='Edit')
+                print(f"    ℹ Found {len(edit_controls)} Edit control(s)")
+                for i, ctrl in enumerate(edit_controls):
+                    print(f"      - Edit {i}: {ctrl.window_text()}")
+                if len(edit_controls) > 0:
+                    username_field = edit_controls[0]
+                    print(f"    ℹ Using first Edit control")
+            except Exception as e:
+                print(f"    ⚠ Error searching for Edit controls: {e}")
+        
+        if username_field is None or not verify_element(username_field, "usernameField"):
             raise Exception("Username field not found!")
         
         print_step(4, f"Entering username: '{test_username}'...")
@@ -110,8 +143,28 @@ def main():
         print(f"    ✓ Username '{test_username}' entered\n")
         
         print_step(5, "Finding and clicking Login button...")
-        login_button = main_window.child_window(auto_id='loginButton', control_type='Button')
-        if not verify_element(login_button, "loginButton"):
+        # Try multiple methods to find the login button
+        login_button = None
+        try:
+            login_button = main_window.child_window(auto_id='loginButton', control_type='Button')
+            if not login_button.exists():
+                login_button = None
+        except:
+            pass
+        
+        if login_button is None:
+            # Try to find button by title/text
+            try:
+                buttons = main_window.children(control_type='Button')
+                for btn in buttons:
+                    if 'Login' in btn.window_text():
+                        login_button = btn
+                        print("    ℹ Found login button by text")
+                        break
+            except:
+                pass
+        
+        if login_button is None or not verify_element(login_button, "loginButton"):
             raise Exception("Login button not found!")
         
         login_button.click()
@@ -122,8 +175,28 @@ def main():
         print_header("PHASE 3: Create Task")
         print_step(6, "Finding task input field...")
         
-        task_input = main_window.child_window(auto_id='taskInput', control_type='Edit')
-        if not verify_element(task_input, "taskInput"):
+        # Try multiple methods to find task input
+        task_input = None
+        try:
+            task_input = main_window.child_window(auto_id='taskInput', control_type='Edit')
+            if not task_input.exists():
+                task_input = None
+        except:
+            pass
+        
+        if task_input is None:
+            # Find all Edit controls and use the visible one (should be on main page now)
+            try:
+                edit_controls = main_window.children(control_type='Edit')
+                for ctrl in edit_controls:
+                    if ctrl.is_visible() and ctrl.is_enabled():
+                        task_input = ctrl
+                        print("    ℹ Found task input by searching visible Edit controls")
+                        break
+            except:
+                pass
+        
+        if task_input is None or not verify_element(task_input, "taskInput"):
             raise Exception("Task input field not found!")
         
         print_step(7, f"Entering task: '{test_task}'...")
@@ -132,8 +205,29 @@ def main():
         print(f"    ✓ Task text entered\n")
         
         print_step(8, "Finding and clicking Add Task button...")
-        add_button = main_window.child_window(auto_id='addTaskButton', control_type='Button')
-        if not verify_element(add_button, "addTaskButton"):
+        # Try multiple methods to find add button
+        add_button = None
+        try:
+            add_button = main_window.child_window(auto_id='addTaskButton', control_type='Button')
+            if not add_button.exists():
+                add_button = None
+        except:
+            pass
+        
+        if add_button is None:
+            # Find button by text
+            try:
+                buttons = main_window.children(control_type='Button')
+                for btn in buttons:
+                    btn_text = btn.window_text()
+                    if 'Add' in btn_text or '+' in btn_text:
+                        add_button = btn
+                        print("    ℹ Found add button by text")
+                        break
+            except:
+                pass
+        
+        if add_button is None or not verify_element(add_button, "addTaskButton"):
             raise Exception("Add Task button not found!")
         
         add_button.click()
