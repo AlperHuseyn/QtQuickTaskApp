@@ -9,6 +9,16 @@ ApplicationWindow {
     height: 700
     title: "QtQuickTaskApp" + (SettingsStore.username ? " — " + SettingsStore.username : "")
 
+    Loader {
+        id: themeLoader
+        source: "qrc:/AppTheme.qml"
+        active: true
+        asynchronous: false
+    }
+
+    property var theme: themeLoader.item
+
+
     AppController {
         id: appController
         currentUser: SettingsStore.username
@@ -22,7 +32,7 @@ ApplicationWindow {
     menuBar: MenuBar {
         Menu {
             title: "File"
-            
+
             Action {
                 text: "Logout"
                 enabled: stackView.currentItem !== loginPage

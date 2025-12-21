@@ -9,12 +9,12 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Qml Quick)
 
 set(SOURCES
         src/main.cpp
-        src/appcontroller.cpp
-        src/appcontroller.h
-        src/taskmodel.cpp
-        src/taskmodel.h
-        src/settingsstore.cpp
-        src/settingsstore.h
+        src/controllers/appcontroller.cpp
+        src/controllers/appcontroller.h
+        src/models/taskmodel.cpp
+        src/models/taskmodel.h
+        src/services/settingsstore.cpp
+        src/services/settingsstore.h
         qml/qml.qrc
 )
 
