@@ -28,7 +28,7 @@ Item {
             Layout.preferredHeight: 80
             color: "white"
             radius: theme.cornerRadius
-            border.color: theme.textColor
+            border.color: theme.borderColor
             border.width: 1
 
             Row {
@@ -70,7 +70,7 @@ Item {
             Layout.preferredHeight: 70
             color: "white"
             radius: theme.cornerRadius
-            border.color: theme.textColor
+            border.color: theme.borderColor
             border.width: 1
 
             Row {
@@ -92,7 +92,7 @@ Item {
                     background: Rectangle {
                         color: theme.backgroundColor
                         radius: theme.cornerRadius
-                        border.color: taskInput.activeFocus ? theme.primaryColor : theme.textColor
+                        border.color: taskInput.activeFocus ? theme.primaryColor : theme.borderColor
                         border.width: 2
 
                         Behavior on border.color {
@@ -152,7 +152,7 @@ Item {
             Layout.fillHeight: true
             color: "white"
             radius: theme.cornerRadius
-            border.color: theme.textColor
+            border.color: theme.borderColor
             border.width: 1
 
             ListView {
@@ -173,7 +173,7 @@ Item {
                     height: 60
                     color: model.done ? theme.backgroundColor : "white"
                     radius: theme.cornerRadius
-                    border.color: theme.textColor
+                    border.color: theme.borderColor
                     border.width: 1
 
                     Accessible.role: Accessible.ListItem
