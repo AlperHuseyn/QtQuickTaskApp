@@ -155,29 +155,32 @@ def main():
             pass
         
         if login_button is None:
-            # Method 2: Try by control type only (find first Button)
+            # Method 2: Search through all Button controls and filter by text
+            print("    ℹ Searching for Button controls with text matching...")
             try:
-                login_button = main_window.child_window(control_type='Button', found_index=0)
-                if login_button.exists():
-                    print("    ℹ Found login button by control type (Button)")
-            except:
-                pass
-        
-        if login_button is None or not login_button.exists():
-            # Method 3: Search through all Button controls
-            print("    ℹ Searching for all Button controls...")
-            try:
-                buttons = main_window.children(control_type='Button')
+                buttons = main_window.descendants(control_type='Button')
                 print(f"    ℹ Found {len(buttons)} Button control(s)")
                 for i, btn in enumerate(buttons):
                     btn_text = btn.window_text()
                     print(f"      - Button {i}: '{btn_text}'")
-                    if 'Login' in btn_text or i == 0:  # Use first button if text match fails
+                    # Match "Login" text - don't use first button by default to avoid title bar buttons
+                    if 'Login' in btn_text or 'login' in btn_text.lower():
                         login_button = btn
-                        print(f"    ℹ Using Button {i}")
+                        print(f"    ℹ Using Button {i} with text '{btn_text}'")
                         break
             except Exception as e:
                 print(f"    ⚠ Error searching for Button controls: {e}")
+        
+        if login_button is None:
+            # Method 3: As fallback, try the LAST button (likely the custom button, not title bar)
+            print("    ℹ Trying last Button as fallback...")
+            try:
+                buttons = main_window.descendants(control_type='Button')
+                if len(buttons) > 0:
+                    login_button = buttons[-1]  # Last button is likely our custom button
+                    print(f"    ℹ Using last button: '{login_button.window_text()}'")
+            except Exception as e:
+                print(f"    ⚠ Error getting last button: {e}")
         
         if login_button is None or not verify_element(login_button, "loginButton"):
             raise Exception("Login button not found!")
@@ -250,17 +253,7 @@ def main():
             pass
         
         if add_button is None or not add_button.exists():
-            # Method 2: Try with found_index
-            try:
-                add_button = main_window.child_window(control_type='Button', found_index=0)
-                if add_button.exists():
-                    btn_text = add_button.window_text()
-                    print(f"    ℹ Found add button by control type: '{btn_text}'")
-            except:
-                pass
-        
-        if add_button is None or not add_button.exists():
-            # Method 3: Search through all Button controls (using descendants for nested elements)
+            # Method 2: Search through all Button controls (using descendants for nested elements)
             print("    ℹ Searching for Add button in all Button controls...")
             try:
                 buttons = main_window.descendants(control_type='Button')
@@ -268,12 +261,25 @@ def main():
                 for i, btn in enumerate(buttons):
                     btn_text = btn.window_text()
                     print(f"      - Button {i}: '{btn_text}'")
-                    if 'Add' in btn_text or '+' in btn_text or (i == 0 and len(buttons) <= 3):
+                    # Match text patterns - avoid using first button to avoid title bar buttons
+                    if 'Add' in btn_text or '+' in btn_text or 'add' in btn_text.lower():
                         add_button = btn
-                        print(f"    ℹ Using Button {i} as Add button")
+                        print(f"    ℹ Using Button {i} with text '{btn_text}' as Add button")
                         break
             except Exception as e:
                 print(f"    ⚠ Error searching for Button controls: {e}")
+        
+        if add_button is None:
+            # Method 3: As fallback, try to find button by position (not first, not last - likely in the middle)
+            print("    ℹ Trying button by position as fallback...")
+            try:
+                buttons = main_window.descendants(control_type='Button')
+                if len(buttons) > 1:
+                    # Skip first button (likely title bar), use second or one after task input area
+                    add_button = buttons[1] if len(buttons) > 1 else buttons[0]
+                    print(f"    ℹ Using button at index 1: '{add_button.window_text()}'")
+            except Exception as e:
+                print(f"    ⚠ Error getting button by position: {e}")
         
         if add_button is None or not verify_element(add_button, "addTaskButton"):
             raise Exception("Add Task button not found!")
@@ -325,18 +331,7 @@ def main():
             pass
         
         if remove_button is None or not remove_button.exists():
-            # Method 2: Try with found_index
-            try:
-                # Try to find Remove button by index (likely the second button after Add)
-                remove_button = main_window.child_window(control_type='Button', found_index=1)
-                if remove_button.exists():
-                    btn_text = remove_button.window_text()
-                    print(f"    ℹ Found remove button by control type: '{btn_text}'")
-            except:
-                pass
-        
-        if remove_button is None or not remove_button.exists():
-            # Method 3: Search for buttons near the task (using descendants)
+            # Method 2: Search for buttons with Remove/Delete/X text
             print("    ℹ Searching for Remove button in all Button controls...")
             try:
                 buttons = main_window.descendants(control_type='Button')
@@ -344,13 +339,28 @@ def main():
                 for i, btn in enumerate(buttons):
                     btn_text = btn.window_text()
                     print(f"      - Button {i}: '{btn_text}'")
-                    # Remove button is likely the second button (after Add button)
-                    if 'Remove' in btn_text or 'X' in btn_text or (len(buttons) >= 2 and i == 1):
+                    # Match text patterns for remove button
+                    if 'Remove' in btn_text or 'X' in btn_text or 'remove' in btn_text.lower() or 'delete' in btn_text.lower():
                         remove_button = btn
-                        print(f"    ℹ Using Button {i} as Remove button")
+                        print(f"    ℹ Using Button {i} with text '{btn_text}' as Remove button")
                         break
             except Exception as e:
                 print(f"    ⚠ Error searching for Button controls: {e}")
+        
+        if remove_button is None:
+            # Method 3: As fallback, find button that's not Add (likely second custom button)
+            print("    ℹ Trying to find non-Add button as fallback...")
+            try:
+                buttons = main_window.descendants(control_type='Button')
+                for i, btn in enumerate(buttons):
+                    btn_text = btn.window_text()
+                    # Skip title bar buttons and Add button
+                    if btn_text and 'Add' not in btn_text and 'add' not in btn_text.lower() and btn_text not in ['Close', 'Minimize', 'Maximize', '']:
+                        remove_button = btn
+                        print(f"    ℹ Using Button {i} with text '{btn_text}' as Remove button")
+                        break
+            except Exception as e:
+                print(f"    ⚠ Error finding non-Add button: {e}")
         
         if remove_button is None or not verify_element(remove_button, "removeTaskButton_0"):
             raise Exception("Remove button not found!")
