@@ -57,10 +57,25 @@ def print_step(step_num, description):
 
 def verify_element(element, name):
     """Verify element exists"""
-    if element.exists():
-        print(f"    ✓ Found: {name}")
-        return True
-    else:
+    try:
+        # Check if element has exists() method (child_window elements)
+        if hasattr(element, 'exists'):
+            if element.exists():
+                print(f"    ✓ Found: {name}")
+                return True
+            else:
+                print(f"    ✗ NOT FOUND: {name}")
+                return False
+        else:
+            # For elements from descendants(), they don't have exists()
+            # Just verify the element is not None
+            if element is not None:
+                print(f"    ✓ Found: {name}")
+                return True
+            else:
+                print(f"    ✗ NOT FOUND: {name}")
+                return False
+    except:
         print(f"    ✗ NOT FOUND: {name}")
         return False
 
