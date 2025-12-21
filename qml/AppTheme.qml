@@ -3,21 +3,15 @@ import QtQml 2.15
 
 QtObject {
     // Brand colors
-    property color primaryColor: "#4CAF50"
-    property color secondaryColor: "#03DAC5"
+    property color primaryColor: "#20214F"
+    property color secondaryColor: "#4D4D72"
 
     // Background & surfaces
     property color backgroundColor: "#FAFAFA"
-    property color footerColor: "#ECEFF1"
-    property color dividerColor: "#E0E0E0"
+    property color borderColor: "#E1E8ED"
 
     // Text
-    property color textColor: "#1F2933"
-
-    // Semantic
-    property color successColor: "#4CAF50"
-    property color warningColor: "#FFC107"
-    property color errorColor:   "#F44336"
+    property color textColor: "#C7CADB"
 
     // Typography
     property int fontSizeSmall: 12
