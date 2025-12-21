@@ -1,9 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QCommandLineParser>
-#include "appcontroller.h"
-#include "taskmodel.h"
-#include "settingsstore.h"
+#include "controllers/appcontroller.h"
+#include "models/taskmodel.h"
+#include "services/settingsstore.h"
 
 static QObject* settingsStoreSingletonProvider(QQmlEngine*, QJSEngine*) {
     return new SettingsStore();
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonType<SettingsStore>("TaskApp", 1, 0, "SettingsStore",
         settingsStoreSingletonProvider);
 
-    const QUrl url(QStringLiteral("qrc:/Main.qml"));
+    const QUrl url(QStringLiteral("qrc:/screens/AppEntry.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
         &app, [url](QObject *obj, const QUrl &objUrl) {
             if (!obj && url == objUrl)

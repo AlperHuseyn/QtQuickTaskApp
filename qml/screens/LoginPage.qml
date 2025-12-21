@@ -4,7 +4,7 @@ import TaskApp 1.0
 
 Item {
     id: root
-    
+
     Accessible.role: Accessible.Pane
     Accessible.name: "loginPage"
     Accessible.description: "Login page for entering username"
@@ -14,23 +14,23 @@ Item {
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#667eea" }
-            GradientStop { position: 1.0; color: "#764ba2" }
+            GradientStop { position: 0.0; color: theme.primaryColor }  // Reuse primary color
+            GradientStop { position: 1.0; color: theme.secondaryColor }  // Reuse secondary color
         }
     }
 
     Column {
         anchors.centerIn: parent
-        spacing: 30
+        spacing: theme.defaultPadding * 2  // Reuse default padding
         width: 350
 
         Text {
             text: "Welcome to TaskApp"
-            font.pixelSize: 32
+            font.pixelSize: theme.fontSizeLarge  // Theme-based font size
             font.bold: true
-            color: "white"
+            color: theme.textColor  // Theme-based text color
             anchors.horizontalCenter: parent.horizontalCenter
-            
+
             Accessible.role: Accessible.StaticText
             Accessible.name: "welcomeTitle"
             Accessible.description: "Welcome to TaskApp"
@@ -38,11 +38,11 @@ Item {
 
         Text {
             text: "Please enter your name to continue"
-            font.pixelSize: 16
-            color: "white"
+            font.pixelSize: theme.fontSizeNormal  // Theme-based font size
+            color: theme.textColor
             opacity: 0.9
             anchors.horizontalCenter: parent.horizontalCenter
-            
+
             Accessible.role: Accessible.StaticText
             Accessible.name: "loginPrompt"
             Accessible.description: "Please enter your name to continue"
@@ -51,21 +51,24 @@ Item {
         Rectangle {
             width: parent.width
             height: 60
-            radius: 8
+            radius: theme.cornerRadius  // Reuse defined corner radius
             color: "white"
             anchors.horizontalCenter: parent.horizontalCenter
 
             TextField {
                 id: usernameField
+                // Assign an objectName so that automation tools (e.g. pywinauto)
+                // can reliably locate this control via the AutomationId property.
+                objectName: "usernameField"
                 anchors.fill: parent
-                anchors.margins: 10
+                anchors.margins: theme.defaultPadding
                 placeholderText: "Enter your username"
-                font.pixelSize: 18
+                font.pixelSize: theme.fontSizeNormal  // Theme-based font size
                 background: Item {}
                 text: SettingsStore.username
 
                 onAccepted: loginButton.clicked()
-                
+
                 Accessible.role: Accessible.EditableText
                 Accessible.name: "usernameField"
                 Accessible.description: "Username input field"
@@ -74,21 +77,26 @@ Item {
 
         Button {
             id: loginButton
+            // Assign an objectName so that automation tools (e.g. pywinauto)
+            // can reliably locate this control via the AutomationId property.
+            objectName: "loginButton"
             text: "Login"
             width: parent.width
             height: 50
-            font.pixelSize: 18
+            font.pixelSize: theme.fontSizeNormal  // Theme-based font size
             font.bold: true
             enabled: usernameField.text.trim().length > 0
-            
+
             Accessible.role: Accessible.Button
             Accessible.name: "loginButton"
             Accessible.description: "Click to login with entered username"
             Accessible.onPressAction: if (enabled) clicked()
 
             background: Rectangle {
-                radius: 8
-                color: loginButton.enabled ? (loginButton.pressed ? "#5568d3" : "#667eea") : "#cccccc"
+                radius: theme.cornerRadius
+                color: loginButton.enabled
+                    ? (loginButton.pressed ? theme.secondaryColor : theme.primaryColor)
+                    : "#cccccc"  // Disabled button color
 
                 Behavior on color {
                     ColorAnimation { duration: 150 }

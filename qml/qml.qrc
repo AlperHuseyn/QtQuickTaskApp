@@ -1,8 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>Main.qml</file>
-        <file>LoginPage.qml</file>
-        <file>MainPage.qml</file>
-        <file>PreferencesDialog.qml</file>
+        <file>AppTheme.qml</file>
+        <file>screens/AppEntry.qml</file>
+        <file>screens/LoginPage.qml</file>
+        <file>screens/MainPage.qml</file>
+        <file>components/PreferencesDialog.qml</file>
     </qresource>
 </RCC>

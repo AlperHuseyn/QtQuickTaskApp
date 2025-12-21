@@ -52,5 +52,5 @@ QtQuickTaskApp
 .DS_Store
 Thumbs.db
 /examples/automation/log.html
-/examples/automation/report.html
 /examples/automation/output.xml
+/examples/automation/report.html
