@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>Main.qml</file>
+        <file>LoginPage.qml</file>
+        <file>MainPage.qml</file>
         <file>PreferencesDialog.qml</file>
     </qresource>
 </RCC>
