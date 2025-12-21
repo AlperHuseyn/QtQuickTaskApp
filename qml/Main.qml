@@ -11,6 +11,7 @@ ApplicationWindow {
 
     AppController {
         id: appController
+        currentUser: SettingsStore.username
     }
 
     onClosing: {

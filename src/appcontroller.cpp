@@ -7,11 +7,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QRegularExpression>
 
 AppController::AppController(QObject* parent)
     : QObject(parent), m_model(new TaskModel(this)),
-      m_storagePath(defaultStoragePath()) {
-    load();
+      m_storagePath(defaultStoragePath()), m_currentUser("") {
+    // Don't auto-load on construction - wait for user to be set
 }
 
 TaskModel* AppController::model() const {
@@ -22,10 +23,49 @@ QString AppController::storagePath() const {
     return m_storagePath;
 }
 
+QString AppController::currentUser() const {
+    return m_currentUser;
+}
+
+void AppController::setCurrentUser(const QString& username) {
+    if (m_currentUser == username) return;
+    
+    // Save current user's tasks before switching
+    if (!m_currentUser.isEmpty()) {
+        save();
+    }
+    
+    m_currentUser = username;
+    updateStoragePath();
+    
+    // Clear and load new user's tasks
+    if (!m_currentUser.isEmpty()) {
+        load();
+    } else {
+        clearTasks();
+    }
+    
+    emit currentUserChanged();
+}
+
 QString AppController::defaultStoragePath() const {
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir().mkpath(path);
     return path + "/tasks.json";
+}
+
+void AppController::updateStoragePath() {
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(path);
+    
+    if (m_currentUser.isEmpty()) {
+        m_storagePath = path + "/tasks.json";
+    } else {
+        // Sanitize username for filename (replace invalid characters)
+        QString safeUsername = m_currentUser;
+        safeUsername.replace(QRegularExpression("[^a-zA-Z0-9_-]"), "_");
+        m_storagePath = path + "/tasks_" + safeUsername + ".json";
+    }
 }
 
 void AppController::load() {
@@ -72,4 +112,8 @@ void AppController::exportTasks(const QString& filePath) {
     if (!file.open(QIODevice::WriteOnly)) return;
 
     save();
+}
+
+void AppController::clearTasks() {
+    m_model->setItems(QVector<TaskItem>());
 }
