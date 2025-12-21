@@ -10,7 +10,7 @@ static QObject* settingsStoreSingletonProvider(QQmlEngine*, QJSEngine*) {
 }
 
 int main(int argc, char *argv[]) {
-    // Enable accessibility by default for automation and screen reader support
+    // Enable accessibility by default for automation-scripts and screen reader support
     // NOTE: This must be done BEFORE QGuiApplication is created, but QCommandLineParser requires
     // QGuiApplication to exist. Therefore, we do a simple manual parse first, then set up the
     // proper QCommandLineParser later for help text and documentation.

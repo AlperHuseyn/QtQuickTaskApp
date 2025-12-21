@@ -51,9 +51,9 @@ QtQuickTaskApp
 # OS files
 .DS_Store
 Thumbs.db
-/examples/automation/log.html
-/examples/automation/output.xml
-/examples/automation/report.html
+/demos/automation-scripts/log.html
+/demos/automation-scripts/output.xml
+/demos/automation-scripts/report.html
 /demos/automation-scripts/log.html
 /demos/automation-scripts/output.xml
 /demos/automation-scripts/report.html

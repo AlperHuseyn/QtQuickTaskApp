@@ -35,7 +35,7 @@ A fully functional task management application built with Qt Quick (QML) and C++
 - All interactive elements have `Accessible.name` and `Accessible.role` properties
 - Compatible with pywinauto for automated testing
 - Supports AT-SPI (Linux) and IAccessible2 (Windows) protocols
-- **Automation script available**: [examples/automation/complete_test.py](examples/automation/complete_test.py)
+- **Automation script available**: [examples/automation/complete_test.py](demos/automation-scripts/e2e_test.py)
 
 ## Architecture
 
@@ -98,8 +98,8 @@ export QT_ACCESSIBILITY=0  # Linux/macOS
 The application includes a complete end-to-end automation test script using pywinauto:
 
 ```bash
-cd examples/automation
-python complete_test.py
+cd demos/automation-scripts
+python e2e_test.py
 ```
 
 The script demonstrates:
@@ -114,29 +114,29 @@ The script demonstrates:
 **Complete End-to-End Test (Login → Create Task → Remove → Logout → Exit):**
 
 ```bash
-# Windows: Complete automation test
+# Windows: Complete automation-scripts test
 pip install pywinauto
-python examples/automation/complete_test.py
+python demos/automation-scripts/e2e_test.py
 
 # Robot Framework: Complete test scenario
 pip install robotframework
-robot examples/automation/complete_test.robot
+robot demos/automation-scripts/complete_test.robot
 ```
 
 **Individual demos:**
 
 ```bash
 # Simple demo (all platforms)
-python3 examples/automation/demo_automation.py
+python3 demos/automation-scripts/demo_automation.py
 
 # Robot Framework test structure
-robot examples/automation/demo_test.robot
+robot demos/automation-scripts/demo_test.robot
 
 # Windows: Step-by-step demo
-python examples/automation/pywinauto_demo.py
+python demos/automation-scripts/pywinauto_demo.py
 ```
 
-See [examples/automation/README.md](examples/automation/README.md) for details.
+See [examples/automation/README.md](demos/automation-scripts/README.md) for details.
 
 ## Usage Flow
 

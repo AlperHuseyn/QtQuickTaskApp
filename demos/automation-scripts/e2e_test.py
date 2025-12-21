@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
 Complete End-to-End Automation Test
-This script demonstrates a full automation workflow:
+This script demonstrates a full automation-scripts workflow:
 1. Login with username
 2. Create a new task
 3. Remove the task
 4. Logout
 5. Exit application
 
-This is a REAL automation test, not just interaction examples.
+This is a REAL automation-scripts test, not just interaction demos.
 
 NOTE: Delays have been increased (2-3 seconds between actions) so you can 
-visually see each phase of the automation happening on screen.
+visually see each phase of the automation-scripts happening on screen.
 
 Requirements:
   pip install pywinauto
 
-Platform: Windows only (pywinauto requires Windows for Qt automation)
+Platform: Windows only (pywinauto requires Windows for Qt automation-scripts)
           For Linux, see atspi_demo.py which uses AT-SPI
 """
 
@@ -30,11 +30,11 @@ if platform.system() != "Windows":
     print(f"Error: This script requires Windows")
     print(f"Current platform: {platform.system()}")
     print()
-    print("For Linux automation, use:")
-    print("  python examples/automation/atspi_demo.py")
+    print("For Linux automation-scripts, use:")
+    print("  python demos/automation-scripts/atspi_demo.py")
     print()
     print("For cross-platform demonstration, use:")
-    print("  python examples/automation/demo_automation.py")
+    print("  python demos/automation-scripts/demo_automation.py")
     sys.exit(1)
 
 try:
@@ -427,7 +427,7 @@ def main():
                 print("    ⚠ File menu not accessible, skipping logout\n")
         except Exception as e:
             print(f"    ⚠ Could not access menu for logout: {e}")
-            print("    ℹ Note: Menu items may not be accessible via automation\n")
+            print("    ℹ Note: Menu items may not be accessible via automation-scripts\n")
         
         # ===== PHASE 6: EXIT =====
         print_header("PHASE 6: Exit Application")

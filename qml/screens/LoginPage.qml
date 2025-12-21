@@ -57,7 +57,7 @@ Item {
 
             TextField {
                 id: usernameField
-                // Assign an objectName so that automation tools (e.g. pywinauto)
+                // Assign an objectName so that automation-scripts tools (e.g. pywinauto)
                 // can reliably locate this control via the AutomationId property.
                 objectName: "usernameField"
                 anchors.fill: parent
@@ -77,7 +77,7 @@ Item {
 
         Button {
             id: loginButton
-            // Assign an objectName so that automation tools (e.g. pywinauto)
+            // Assign an objectName so that automation-scripts tools (e.g. pywinauto)
             // can reliably locate this control via the AutomationId property.
             objectName: "loginButton"
             text: "Login"
