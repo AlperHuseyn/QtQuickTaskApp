@@ -13,6 +13,11 @@ ApplicationWindow {
         id: appController
     }
 
+    onClosing: {
+        // Clear username on exit to ensure login screen shows next time
+        SettingsStore.username = ""
+    }
+
     menuBar: MenuBar {
         Menu {
             title: "File"
@@ -28,7 +33,10 @@ ApplicationWindow {
             MenuSeparator {}
             Action {
                 text: "Exit"
-                onTriggered: Qt.quit()
+                onTriggered: {
+                    SettingsStore.username = ""
+                    Qt.quit()
+                }
             }
         }
     }
