@@ -33,10 +33,9 @@ A fully functional task management application built with Qt Quick (QML) and C++
 - **Full accessibility support** for screen readers and automation tools
 - **Enabled by default** - no configuration needed!
 - All interactive elements have `Accessible.name` and `Accessible.role` properties
-- Compatible with Robot Framework + pywinauto for automated testing
+- Compatible with pywinauto for automated testing
 - Supports AT-SPI (Linux) and IAccessible2 (Windows) protocols
-- **[Automation Examples](examples/automation/)** - Ready-to-run demo scripts
-- See [AUTOMATION_GUIDE.md](AUTOMATION_GUIDE.md) for detailed automation instructions
+- **Automation script available**: [examples/automation/complete_test.py](examples/automation/complete_test.py)
 
 ## Architecture
 
@@ -94,9 +93,21 @@ export QT_ACCESSIBILITY=0  # Linux/macOS
 ./QtQuickTaskApp
 ```
 
-For automated testing, see:
-- **[examples/automation/](examples/automation/)** - Ready-to-run demo scripts
-- **[AUTOMATION_GUIDE.md](AUTOMATION_GUIDE.md)** - Complete automation guide
+### Automated Testing
+
+The application includes a complete end-to-end automation test script using pywinauto:
+
+```bash
+cd examples/automation
+python complete_test.py
+```
+
+The script demonstrates:
+- Login flow
+- Task creation and management
+- Task removal
+- Logout and exit
+- Full Windows UI Automation integration
 
 ## Quick Automation Demo
 
