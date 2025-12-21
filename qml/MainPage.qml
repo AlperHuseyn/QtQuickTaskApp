@@ -292,6 +292,16 @@ Item {
             Accessible.name: "clearCompletedButton"
             Accessible.description: "Clear all completed tasks"
             Accessible.onPressAction: if (enabled) clicked()
+            
+            // Force re-evaluation when completed tasks change
+            Connections {
+                target: controller ? controller.model : null
+                function onCompletedTasksChanged() {
+                    clearButton.enabled = Qt.binding(function() {
+                        return controller && controller.model && controller.model.hasCompletedTasks()
+                    })
+                }
+            }
 
             background: Rectangle {
                 radius: 8

@@ -33,6 +33,9 @@ public:
     QVector<TaskItem> items() const;
     void setItems(const QVector<TaskItem>& items);
 
+signals:
+    void completedTasksChanged();
+
 private:
     QVector<TaskItem> m_items;
 };

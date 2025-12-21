@@ -40,12 +40,14 @@ void TaskModel::toggleTask(int row) {
     if (row < 0 || row >= m_items.size()) return;
     m_items[row].done = !m_items[row].done;
     emit dataChanged(index(row), index(row), {DoneRole});
+    emit completedTasksChanged();
 }
 
 void TaskModel::clearCompleted() {
     for (int i = m_items.size() - 1; i >= 0; --i) {
         if (m_items[i].done) removeTask(i);
     }
+    emit completedTasksChanged();
 }
 
 bool TaskModel::hasCompletedTasks() const {
@@ -63,4 +65,5 @@ void TaskModel::setItems(const QVector<TaskItem>& items) {
     beginResetModel();
     m_items = items;
     endResetModel();
+    emit completedTasksChanged();
 }
