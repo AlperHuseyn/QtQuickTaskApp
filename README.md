@@ -40,7 +40,7 @@ A fully functional task management application built with Qt Quick (QML) and C++
 ## Architecture
 
 ### QML Components
-- **Main.qml**: Application window and navigation manager using StackView
+- **AppEntry.qml**: Application window and navigation manager using StackView
 - **LoginPage.qml**: User login interface
 - **MainPage.qml**: Task management interface
 
@@ -172,7 +172,7 @@ QtQuickTaskApp/
 │   ├── taskmodel.h/cpp    # Task data model
 │   └── settingsstore.h/cpp # User settings management
 └── qml/
-    ├── Main.qml           # Main application window
+    ├── AppEntry.qml           # Main application window
     ├── LoginPage.qml      # Login screen
     ├── MainPage.qml       # Task management screen
     └── qml.qrc            # Qt resource file

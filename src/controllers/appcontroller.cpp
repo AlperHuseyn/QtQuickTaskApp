@@ -1,5 +1,5 @@
 #include "appcontroller.h"
-#include "taskmodel.h"
+#include "../models/taskmodel.h"
 #include <QStandardPaths>
 #include <QDir>
 #include <QFile>

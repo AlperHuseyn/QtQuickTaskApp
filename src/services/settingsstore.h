@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QString>
 
-class SettingsStore : public QObject
+class SettingsStore final : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)

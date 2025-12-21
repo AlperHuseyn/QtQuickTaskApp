@@ -5,7 +5,7 @@
 SettingsStore::SettingsStore(QObject* parent)
     : QObject(parent)
 {
-    QSettings s;
+    const QSettings s;
     m_username = s.value("user/username", "User").toString();
 }
 

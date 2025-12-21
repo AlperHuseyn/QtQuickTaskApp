@@ -5,7 +5,7 @@ import TaskApp 1.0
 
 Item {
     id: root
-    
+
     Accessible.role: Accessible.Pane
     Accessible.name: "mainPage"
     Accessible.description: "Task management page"
@@ -14,38 +14,38 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#f5f7fa"
+        color: theme.backgroundColor
     }
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
+        anchors.margins: theme.defaultPadding
+        spacing: theme.defaultPadding
 
         // Header
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 80
             color: "white"
-            radius: 12
-            border.color: "#e1e8ed"
+            radius: theme.cornerRadius
+            border.color: theme.textColor
             border.width: 1
 
             Row {
                 anchors.fill: parent
-                anchors.margins: 20
-                spacing: 15
+                anchors.margins: theme.defaultPadding
+                spacing: theme.defaultPadding
 
                 Column {
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 5
+                    spacing: theme.defaultPadding
 
                     Text {
                         text: "Welcome, " + SettingsStore.username + "!"
-                        font.pixelSize: 24
+                        font.pixelSize: theme.fontSizeLarge
                         font.bold: true
-                        color: "#2c3e50"
-                        
+                        color: theme.textColor
+
                         Accessible.role: Accessible.StaticText
                         Accessible.name: "welcomeMessage"
                         Accessible.description: "Welcome message with username"
@@ -53,9 +53,9 @@ Item {
 
                     Text {
                         text: taskListView.count + " task(s)"
-                        font.pixelSize: 14
+                        font.pixelSize: theme.fontSizeNormal
                         color: "#7f8c8d"
-                        
+
                         Accessible.role: Accessible.StaticText
                         Accessible.name: "taskCounter"
                         Accessible.description: "Number of tasks"
@@ -69,30 +69,30 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
             color: "white"
-            radius: 12
-            border.color: "#e1e8ed"
+            radius: theme.cornerRadius
+            border.color: theme.textColor
             border.width: 1
 
             Row {
                 anchors.fill: parent
-                anchors.margins: 15
-                spacing: 10
+                anchors.margins: theme.defaultPadding
+                spacing: theme.defaultPadding
 
                 TextField {
                     id: taskInput
                     width: parent.width - addButton.width - parent.spacing
                     height: parent.height
                     placeholderText: "What needs to be done?"
-                    font.pixelSize: 16
-                    
+                    font.pixelSize: theme.fontSizeNormal
+
                     Accessible.role: Accessible.EditableText
                     Accessible.name: "taskInput"
                     Accessible.description: "Input field for new task"
 
                     background: Rectangle {
-                        color: "#f8f9fa"
-                        radius: 8
-                        border.color: taskInput.activeFocus ? "#667eea" : "#e1e8ed"
+                        color: theme.backgroundColor
+                        radius: theme.cornerRadius
+                        border.color: taskInput.activeFocus ? theme.primaryColor : theme.textColor
                         border.width: 2
 
                         Behavior on border.color {
@@ -107,18 +107,18 @@ Item {
                     id: addButton
                     text: "Add Task"
                     height: parent.height
-                    font.pixelSize: 16
+                    font.pixelSize: theme.fontSizeNormal
                     font.bold: true
                     enabled: taskInput.text.trim().length > 0
-                    
+
                     Accessible.role: Accessible.Button
                     Accessible.name: "addTaskButton"
                     Accessible.description: "Add new task"
                     Accessible.onPressAction: if (enabled) clicked()
 
                     background: Rectangle {
-                        radius: 8
-                        color: addButton.enabled ? (addButton.pressed ? "#5568d3" : "#667eea") : "#cccccc"
+                        radius: theme.cornerRadius
+                        color: addButton.enabled ? (addButton.pressed ? theme.secondaryColor : theme.primaryColor) : "gray"
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }
@@ -151,17 +151,17 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: "white"
-            radius: 12
-            border.color: "#e1e8ed"
+            radius: theme.cornerRadius
+            border.color: theme.textColor
             border.width: 1
 
             ListView {
                 id: taskListView
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
+                anchors.margins: theme.defaultPadding
+                spacing: theme.defaultPadding / 2
                 clip: true
-                
+
                 Accessible.role: Accessible.List
                 Accessible.name: "taskListView"
                 Accessible.description: "List of tasks"
@@ -171,11 +171,11 @@ Item {
                 delegate: Rectangle {
                     width: taskListView.width
                     height: 60
-                    color: model.done ? "#f8f9fa" : "white"
-                    radius: 8
-                    border.color: "#e1e8ed"
+                    color: model.done ? theme.backgroundColor : "white"
+                    radius: theme.cornerRadius
+                    border.color: theme.textColor
                     border.width: 1
-                    
+
                     Accessible.role: Accessible.ListItem
                     Accessible.name: "taskItem_" + index
                     Accessible.description: model.title + (model.done ? " (completed)" : " (active)")
@@ -186,14 +186,14 @@ Item {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 10
+                        anchors.margins: theme.defaultPadding / 2
+                        spacing: theme.defaultPadding / 2
 
                         CheckBox {
                             id: checkbox
                             Layout.alignment: Qt.AlignVCenter
                             checked: model.done
-                            
+
                             Accessible.role: Accessible.CheckBox
                             Accessible.name: "taskCheckbox_" + index
                             Accessible.description: "Toggle completion for: " + model.title
@@ -209,13 +209,13 @@ Item {
 
                         Text {
                             text: model.title
-                            font.pixelSize: 16
-                            color: model.done ? "#95a5a6" : "#2c3e50"
+                            font.pixelSize: theme.fontSizeNormal
+                            color: model.done ? "#95a5a6" : theme.primaryColor
                             font.strikeout: model.done
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
                             elide: Text.ElideRight
-                            
+
                             Accessible.role: Accessible.StaticText
                             Accessible.name: "taskTitle_" + index
                             Accessible.description: model.title
@@ -229,15 +229,15 @@ Item {
                             id: removeButton
                             text: "Remove"
                             Layout.alignment: Qt.AlignVCenter
-                            font.pixelSize: 14
-                            
+                            font.pixelSize: theme.fontSizeSmall
+
                             Accessible.role: Accessible.Button
                             Accessible.name: "removeTaskButton_" + index
                             Accessible.description: "Remove task: " + model.title
                             Accessible.onPressAction: clicked()
 
                             background: Rectangle {
-                                radius: 6
+                                radius: theme.cornerRadius
                                 color: removeButton.pressed ? "#c0392b" : "#e74c3c"
 
                                 Behavior on color {
@@ -268,10 +268,10 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: "No tasks yet. Add your first task above!"
-                    font.pixelSize: 16
-                    color: "#95a5a6"
+                    font.pixelSize: theme.fontSizeLarge
+                    color: "gray"
                     visible: taskListView.count === 0
-                    
+
                     Accessible.role: Accessible.StaticText
                     Accessible.name: "emptyStateMessage"
                     Accessible.description: "No tasks yet. Add your first task above!"
@@ -285,14 +285,14 @@ Item {
             text: "Clear Completed Tasks"
             Layout.fillWidth: true
             Layout.preferredHeight: 50
-            font.pixelSize: 16
+            font.pixelSize: theme.fontSizeLArge
             enabled: controller && controller.model && controller.model.hasCompletedTasks()
-            
+
             Accessible.role: Accessible.Button
             Accessible.name: "clearCompletedButton"
             Accessible.description: "Clear all completed tasks"
             Accessible.onPressAction: if (enabled) clicked()
-            
+
             // Force re-evaluation when completed tasks change
             Connections {
                 target: controller ? controller.model : null
@@ -304,7 +304,7 @@ Item {
             }
 
             background: Rectangle {
-                radius: 8
+                radius: theme.cornerRadius
                 color: clearButton.enabled ? (clearButton.pressed ? "#d68910" : "#f39c12") : "#ecf0f1"
 
                 Behavior on color {
