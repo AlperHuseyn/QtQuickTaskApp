@@ -1,3 +1,4 @@
+set(CMAKE_PREFIX_PATH "C:/Qt/5.15.2/msvc2019_64")  
 cmake_minimum_required(VERSION 3.16)
 
 project(QtQuickTaskApp LANGUAGES CXX)

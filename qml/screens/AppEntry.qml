@@ -29,12 +29,30 @@ ApplicationWindow {
         SettingsStore.username = ""
     }
 
+    // Keyboard shortcuts for automation and accessibility
+    Shortcut {
+        sequence: "Ctrl+L"
+        enabled: stackView.currentItem !== loginPage
+        onActivated: {
+            SettingsStore.username = ""
+            stackView.replace(loginPage)
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Q"
+        onActivated: {
+            SettingsStore.username = ""
+            Qt.quit()
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: "File"
 
             Action {
-                text: "Logout"
+                text: "Logout\tCtrl+L"
                 enabled: stackView.currentItem !== loginPage
                 onTriggered: {
                     SettingsStore.username = ""
@@ -43,7 +61,7 @@ ApplicationWindow {
             }
             MenuSeparator {}
             Action {
-                text: "Exit"
+                text: "Exit\tCtrl+Q"
                 onTriggered: {
                     SettingsStore.username = ""
                     Qt.quit()
