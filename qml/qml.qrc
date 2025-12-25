@@ -4,5 +4,7 @@
         <file>screens/AppEntry.qml</file>
         <file>screens/LoginPage.qml</file>
         <file>screens/MainPage.qml</file>
+        <file>dialogs/WorkoutDetailsDialog.qml</file>
+        <file>dialogs/TaskNotesDialog.qml</file>
     </qresource>
 </RCC>
