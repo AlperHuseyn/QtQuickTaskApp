@@ -95,11 +95,6 @@ Item {
                         property int decimals: 2
                         property real realValue: value / 100
                         
-                        validator: DoubleValidator {
-                            bottom: Math.min(weightInput.from, weightInput.to)
-                            top: Math.max(weightInput.from, weightInput.to)
-                        }
-                        
                         textFromValue: function(value, locale) {
                             return Number(value / 100).toLocaleString(locale, 'f', decimals)
                         }
