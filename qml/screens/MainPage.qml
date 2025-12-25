@@ -13,16 +13,217 @@ Item {
     property AppController controller: null
 
     // Load dialogs
-    WorkoutDetailsDialog {
-        id: workoutDialog
-        controller: root.controller
-        parent: Overlay.overlay
+    Loader {
+        id: workoutDialogLoader
+        active: false
+        sourceComponent: workoutDialogComponent
+        onLoaded: item.open()
     }
 
-    TaskNotesDialog {
-        id: notesDialog
-        controller: root.controller
-        parent: Overlay.overlay
+    Component {
+        id: workoutDialogComponent
+        Dialog {
+            id: workoutDialog
+            modal: true
+            title: "Workout Details"
+            standardButtons: Dialog.Ok | Dialog.Cancel
+            parent: Overlay.overlay
+            
+            property int taskIndex: -1
+            property int reps: 0
+            property double weight: 0.0
+            property int sets: 0
+            
+            Accessible.role: Accessible.Dialog
+            Accessible.name: "workoutDetailsDialog"
+            Accessible.description: "Dialog for editing workout details"
+            
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            
+            width: 400
+            height: 300
+            
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: theme.defaultPadding
+                
+                Label {
+                    text: "Enter workout details:"
+                    font.pixelSize: theme.fontSizeLarge
+                    font.bold: true
+                    color: theme.textColor
+                }
+                
+                GridLayout {
+                    columns: 2
+                    columnSpacing: theme.defaultPadding
+                    rowSpacing: theme.defaultPadding / 2
+                    Layout.fillWidth: true
+                    
+                    Label {
+                        text: "Repetitions:"
+                        font.pixelSize: theme.fontSizeNormal
+                        color: theme.textColor
+                    }
+                    
+                    SpinBox {
+                        id: repsInput
+                        from: 0
+                        to: 999
+                        value: workoutDialog.reps
+                        Layout.fillWidth: true
+                        
+                        Accessible.role: Accessible.SpinBox
+                        Accessible.name: "repsInput"
+                        Accessible.description: "Number of repetitions"
+                    }
+                    
+                    Label {
+                        text: "Weight (kg):"
+                        font.pixelSize: theme.fontSizeNormal
+                        color: theme.textColor
+                    }
+                    
+                    SpinBox {
+                        id: weightInput
+                        from: 0
+                        to: 99900
+                        stepSize: 50
+                        value: workoutDialog.weight * 100
+                        
+                        property int decimals: 2
+                        property real realValue: value / 100
+                        
+                        validator: DoubleValidator {
+                            bottom: Math.min(weightInput.from, weightInput.to)
+                            top: Math.max(weightInput.from, weightInput.to)
+                        }
+                        
+                        textFromValue: function(value, locale) {
+                            return Number(value / 100).toLocaleString(locale, 'f', decimals)
+                        }
+                        
+                        valueFromText: function(text, locale) {
+                            return Number.fromLocaleString(locale, text) * 100
+                        }
+                        
+                        Layout.fillWidth: true
+                        
+                        Accessible.role: Accessible.SpinBox
+                        Accessible.name: "weightInput"
+                        Accessible.description: "Weight in kilograms"
+                    }
+                    
+                    Label {
+                        text: "Sets:"
+                        font.pixelSize: theme.fontSizeNormal
+                        color: theme.textColor
+                    }
+                    
+                    SpinBox {
+                        id: setsInput
+                        from: 0
+                        to: 999
+                        value: workoutDialog.sets
+                        Layout.fillWidth: true
+                        
+                        Accessible.role: Accessible.SpinBox
+                        Accessible.name: "setsInput"
+                        Accessible.description: "Number of sets"
+                    }
+                }
+                
+                Item {
+                    Layout.fillHeight: true
+                }
+            }
+            
+            onAccepted: {
+                if (controller && taskIndex >= 0) {
+                    controller.model.updateWorkoutDetails(taskIndex, repsInput.value, weightInput.realValue, setsInput.value)
+                    controller.save()
+                }
+            }
+        }
+    }
+
+    Loader {
+        id: notesDialogLoader
+        active: false
+        sourceComponent: notesDialogComponent
+        onLoaded: item.open()
+    }
+
+    Component {
+        id: notesDialogComponent
+        Dialog {
+            id: notesDialog
+            modal: true
+            title: "Task Notes"
+            standardButtons: Dialog.Ok | Dialog.Cancel
+            parent: Overlay.overlay
+            
+            property int taskIndex: -1
+            property string notes: ""
+            
+            Accessible.role: Accessible.Dialog
+            Accessible.name: "taskNotesDialog"
+            Accessible.description: "Dialog for editing task notes"
+            
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            
+            width: 500
+            height: 400
+            
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: theme.defaultPadding
+                
+                Label {
+                    text: "Task Notes:"
+                    font.pixelSize: theme.fontSizeLarge
+                    font.bold: true
+                    color: theme.textColor
+                }
+                
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    
+                    TextArea {
+                        id: notesInput
+                        text: notesDialog.notes
+                        placeholderText: "Enter notes for this task..."
+                        wrapMode: TextArea.Wrap
+                        font.pixelSize: theme.fontSizeNormal
+                        
+                        Accessible.role: Accessible.EditableText
+                        Accessible.name: "notesInput"
+                        Accessible.description: "Text area for task notes"
+                        
+                        background: Rectangle {
+                            color: theme.backgroundColor
+                            radius: theme.cornerRadius
+                            border.color: notesInput.activeFocus ? theme.primaryColor : theme.borderColor
+                            border.width: 2
+                            
+                            Behavior on border.color {
+                                ColorAnimation { duration: 200 }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            onAccepted: {
+                if (controller && taskIndex >= 0) {
+                    controller.model.updateTaskNotes(taskIndex, notesInput.text)
+                    controller.save()
+                }
+            }
+        }
     }
 
     Rectangle {
@@ -308,15 +509,21 @@ Item {
                                     
                                     onDoubleClicked: {
                                         if (modelData.category === "Workout") {
-                                            workoutDialog.taskIndex = modelData.index
-                                            workoutDialog.reps = modelData.reps
-                                            workoutDialog.weight = modelData.weight
-                                            workoutDialog.sets = modelData.sets
-                                            workoutDialog.open()
+                                            workoutDialogLoader.active = false
+                                            workoutDialogLoader.setSource("", {
+                                                "taskIndex": modelData.index,
+                                                "reps": modelData.reps,
+                                                "weight": modelData.weight,
+                                                "sets": modelData.sets
+                                            })
+                                            workoutDialogLoader.active = true
                                         } else {
-                                            notesDialog.taskIndex = modelData.index
-                                            notesDialog.notes = modelData.notes
-                                            notesDialog.open()
+                                            notesDialogLoader.active = false
+                                            notesDialogLoader.setSource("", {
+                                                "taskIndex": modelData.index,
+                                                "notes": modelData.notes
+                                            })
+                                            notesDialogLoader.active = true
                                         }
                                     }
                                 }
