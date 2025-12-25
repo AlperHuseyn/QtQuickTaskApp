@@ -83,7 +83,17 @@ void AppController::load() {
     QVector<TaskItem> tasks;
     for (const QJsonValue& value : taskArray) {
         QJsonObject obj = value.toObject();
-        tasks.append(TaskItem{obj.value("title").toString(), obj.value("done").toBool()});
+        TaskItem task(
+            obj.value("title").toString(),
+            obj.value("done").toBool(),
+            obj.value("hour").toInt(-1),
+            obj.value("category").toString("General"),
+            obj.value("notes").toString(""),
+            obj.value("reps").toInt(0),
+            obj.value("weight").toDouble(0.0),
+            obj.value("sets").toInt(0)
+        );
+        tasks.append(task);
     }
     m_model->setItems(tasks);
 }
@@ -94,6 +104,12 @@ void AppController::save() {
         QJsonObject obj;
         obj["title"] = task.title;
         obj["done"] = task.done;
+        obj["hour"] = task.hour;
+        obj["category"] = task.category;
+        obj["notes"] = task.notes;
+        obj["reps"] = task.reps;
+        obj["weight"] = task.weight;
+        obj["sets"] = task.sets;
         taskArray.append(obj);
     }
 
