@@ -494,8 +494,6 @@ Item {
             }
         }
 
-        standardButtons: Dialog.Save | Dialog.Close
-        
         footer: DialogButtonBox {
             Button {
                 text: "Delete"
@@ -601,8 +599,6 @@ Item {
             }
         }
 
-        standardButtons: Dialog.Save | Dialog.Close
-        
         footer: DialogButtonBox {
             Button {
                 text: "Delete"
