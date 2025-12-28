@@ -12,6 +12,21 @@ Item {
 
     property AppController controller: null
     property date currentWeekStart: getWeekStart(new Date())
+    property int refreshCounter: 0  // Used to force refresh of task bindings
+
+    // Force refresh of all task bindings
+    function refreshTasks() {
+        refreshCounter++
+    }
+
+    // Listen for model changes
+    Connections {
+        target: controller ? controller.model : null
+        function onRowsInserted() { refreshTasks() }
+        function onRowsRemoved() { refreshTasks() }
+        function onDataChanged() { refreshTasks() }
+        function onModelReset() { refreshTasks() }
+    }
 
     // Get the start of the week (Sunday) for a given date
     function getWeekStart(date) {
@@ -193,7 +208,8 @@ Item {
                             model: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                             
                             Rectangle {
-                                Layout.preferredWidth: 100
+                                Layout.fillWidth: true
+                                Layout.minimumWidth: 100
                                 Layout.preferredHeight: 40
                                 color: theme.primaryColor
                                 border.color: theme.borderColor
@@ -249,7 +265,8 @@ Item {
 
                                 Rectangle {
                                     id: cellRect
-                                    Layout.preferredWidth: 100
+                                    Layout.fillWidth: true
+                                    Layout.minimumWidth: 100
                                     Layout.preferredHeight: 60
                                     color: cellMouseArea.containsMouse ? "#f0f0f0" : "white"
                                     border.color: theme.borderColor
@@ -257,7 +274,10 @@ Item {
 
                                     property int day: index
                                     property int cellHour: hour
-                                    property var tasks: controller ? controller.model.getTasksForCell(day, cellHour, currentWeekStart.toISOString()) : []
+                                    property var tasks: {
+                                        refreshCounter  // Dependency to force refresh
+                                        return controller ? controller.model.getTasksForCell(day, cellHour, currentWeekStart.toISOString()) : []
+                                    }
 
                                     Accessible.role: Accessible.Cell
                                     Accessible.name: "cell_day" + day + "_hour" + cellHour
@@ -348,9 +368,6 @@ Item {
         property int targetDay: 0
         property int targetHour: 5
 
-        Accessible.role: Accessible.Dialog
-        Accessible.name: "addTaskDialog"
-
         ColumnLayout {
             anchors.fill: parent
             spacing: 10
@@ -435,9 +452,6 @@ Item {
         property string taskTitle: ""
         property string taskNotes: ""
 
-        Accessible.role: Accessible.Dialog
-        Accessible.name: "workoutDetailsDialog"
-
         ColumnLayout {
             anchors.fill: parent
             spacing: 10
@@ -503,9 +517,6 @@ Item {
         property string taskTitle: ""
         property string taskNotes: ""
 
-        Accessible.role: Accessible.Dialog
-        Accessible.name: "taskNotesDialog"
-
         ColumnLayout {
             anchors.fill: parent
             spacing: 10
@@ -568,9 +579,6 @@ Item {
         height: 300
 
         property var cellTasks: []
-
-        Accessible.role: Accessible.Dialog
-        Accessible.name: "taskListDialog"
 
         ScrollView {
             anchors.fill: parent
