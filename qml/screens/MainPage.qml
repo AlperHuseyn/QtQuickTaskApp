@@ -148,7 +148,6 @@ Item {
                 ColumnLayout {
                     anchors.fill: parent
                     spacing: theme.defaultPadding
-                    spacing: theme.defaultPadding
 
                     // Add Task Section
                     Rectangle {
@@ -371,7 +370,7 @@ Item {
                         text: "Clear Completed Tasks"
                         Layout.fillWidth: true
                         Layout.preferredHeight: 50
-                        font.pixelSize: theme.fontSizeLArge
+                        font.pixelSize: theme.fontSizeLarge
                         enabled: controller && controller.model && controller.model.hasCompletedTasks()
 
                         Accessible.role: Accessible.Button
