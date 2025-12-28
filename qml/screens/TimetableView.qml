@@ -284,8 +284,10 @@ Item {
                                     Accessible.description: tasks.length + " task(s) in this cell"
 
                                     Column {
-                                        anchors.fill: parent
-                                        anchors.margins: 2
+                                        x: 2
+                                        y: 2
+                                        width: parent.width - 4
+                                        height: parent.height - 4
                                         spacing: 2
 
                                         Repeater {
@@ -316,7 +318,10 @@ Item {
 
                                     MouseArea {
                                         id: cellMouseArea
-                                        anchors.fill: parent
+                                        x: 0
+                                        y: 0
+                                        width: parent.width
+                                        height: parent.height
                                         hoverEnabled: true
                                         acceptedButtons: Qt.LeftButton
 
