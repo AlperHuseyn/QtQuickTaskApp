@@ -14,19 +14,47 @@ QVariant TaskModel::data(const QModelIndex& index, int role) const {
     switch (role) {
     case TitleRole: return task.title;
     case DoneRole: return task.done;
+    case DayRole: return task.day;
+    case HourRole: return task.hour;
+    case TaskTypeRole: return task.taskType;
+    case NotesRole: return task.notes;
+    case DateTimeRole: return task.dateTime;
     }
 
     return {};
 }
 
 QHash<int, QByteArray> TaskModel::roleNames() const {
-    return {{TitleRole, "title"}, {DoneRole, "done"}};
+    return {
+        {TitleRole, "title"}, 
+        {DoneRole, "done"},
+        {DayRole, "day"},
+        {HourRole, "hour"},
+        {TaskTypeRole, "taskType"},
+        {NotesRole, "notes"},
+        {DateTimeRole, "dateTime"}
+    };
 }
 
 void TaskModel::addTask(const QString& title) {
     beginInsertRows(QModelIndex(), m_items.size(), m_items.size());
-    m_items.append(TaskItem(title, false));
+    m_items.append(TaskItem(title, false, -1, -1, "other", "", QDateTime()));
     endInsertRows();
+}
+
+void TaskModel::addTimetableTask(const QString& title, int day, int hour, 
+                                  const QString& taskType, const QString& notes,
+                                  const QString& dateTimeStr) {
+    beginInsertRows(QModelIndex(), m_items.size(), m_items.size());
+    QDateTime dt = QDateTime::fromString(dateTimeStr, Qt::ISODate);
+    m_items.append(TaskItem(title, false, day, hour, taskType, notes, dt));
+    endInsertRows();
+}
+
+void TaskModel::updateTaskNotes(int row, const QString& notes) {
+    if (row < 0 || row >= m_items.size()) return;
+    m_items[row].notes = notes;
+    emit dataChanged(index(row), index(row), {NotesRole});
 }
 
 void TaskModel::removeTask(int row) {
@@ -66,4 +94,45 @@ void TaskModel::setItems(const QVector<TaskItem>& items) {
     m_items = items;
     endResetModel();
     emit completedTasksChanged();
+}
+
+QVariantList TaskModel::getTasksForCell(int day, int hour, const QString& weekStart) const {
+    QVariantList result;
+    QDateTime weekStartDate = QDateTime::fromString(weekStart, Qt::ISODate);
+    
+    for (int i = 0; i < m_items.size(); ++i) {
+        const TaskItem& task = m_items[i];
+        
+        // For timetable tasks (with valid day/hour)
+        if (task.day == day && task.hour == hour) {
+            // Check if task is in current week
+            if (weekStartDate.isValid() && task.dateTime.isValid()) {
+                QDateTime weekEndDate = weekStartDate.addDays(7);
+                if (task.dateTime >= weekStartDate && task.dateTime < weekEndDate) {
+                    QVariantMap taskMap;
+                    taskMap["index"] = i;
+                    taskMap["title"] = task.title;
+                    taskMap["done"] = task.done;
+                    taskMap["taskType"] = task.taskType;
+                    taskMap["notes"] = task.notes;
+                    result.append(taskMap);
+                }
+            } else if (!weekStartDate.isValid()) {
+                // If no week filtering, show all tasks for this day/hour
+                QVariantMap taskMap;
+                taskMap["index"] = i;
+                taskMap["title"] = task.title;
+                taskMap["done"] = task.done;
+                taskMap["taskType"] = task.taskType;
+                taskMap["notes"] = task.notes;
+                result.append(taskMap);
+            }
+        }
+    }
+    
+    return result;
+}
+
+int TaskModel::getTaskCount(int day, int hour, const QString& weekStart) const {
+    return getTasksForCell(day, hour, weekStart).size();
 }

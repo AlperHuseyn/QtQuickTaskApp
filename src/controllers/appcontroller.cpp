@@ -83,7 +83,22 @@ void AppController::load() {
     QVector<TaskItem> tasks;
     for (const QJsonValue& value : taskArray) {
         QJsonObject obj = value.toObject();
-        tasks.append(TaskItem{obj.value("title").toString(), obj.value("done").toBool()});
+        
+        // Support both old format (simple tasks) and new format (timetable tasks)
+        QString title = obj.value("title").toString();
+        bool done = obj.value("done").toBool();
+        int day = obj.value("day").toInt(-1);
+        int hour = obj.value("hour").toInt(-1);
+        QString taskType = obj.value("taskType").toString("other");
+        QString notes = obj.value("notes").toString();
+        QString dateTimeStr = obj.value("dateTime").toString();
+        
+        QDateTime dateTime;
+        if (!dateTimeStr.isEmpty()) {
+            dateTime = QDateTime::fromString(dateTimeStr, Qt::ISODate);
+        }
+        
+        tasks.append(TaskItem{title, done, day, hour, taskType, notes, dateTime});
     }
     m_model->setItems(tasks);
 }
@@ -94,6 +109,13 @@ void AppController::save() {
         QJsonObject obj;
         obj["title"] = task.title;
         obj["done"] = task.done;
+        obj["day"] = task.day;
+        obj["hour"] = task.hour;
+        obj["taskType"] = task.taskType;
+        obj["notes"] = task.notes;
+        if (task.dateTime.isValid()) {
+            obj["dateTime"] = task.dateTime.toString(Qt::ISODate);
+        }
         taskArray.append(obj);
     }
 

@@ -4,5 +4,6 @@
         <file>screens/AppEntry.qml</file>
         <file>screens/LoginPage.qml</file>
         <file>screens/MainPage.qml</file>
+        <file>screens/TimetableView.qml</file>
     </qresource>
 </RCC>
