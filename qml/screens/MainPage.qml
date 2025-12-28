@@ -12,60 +12,9 @@ Item {
 
     property AppController controller: null
 
-    Rectangle {
+    // Timetable View fills entire window
+    TimetableView {
         anchors.fill: parent
-        color: theme.backgroundColor
-    }
-
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: theme.defaultPadding
-        spacing: theme.defaultPadding
-
-        // Header
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 60
-            color: "white"
-            radius: theme.cornerRadius
-            border.color: theme.borderColor
-            border.width: 1
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.margins: theme.defaultPadding
-                spacing: theme.defaultPadding
-
-                Text {
-                    text: "Weekly Timetable"
-                    font.pixelSize: theme.fontSizeLarge
-                    font.bold: true
-                    color: theme.primaryColor
-
-                    Accessible.role: Accessible.StaticText
-                    Accessible.name: "pageTitle"
-                    Accessible.description: "Page title: Weekly Timetable"
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: "Welcome, " + SettingsStore.username + "!"
-                    font.pixelSize: theme.fontSizeNormal
-                    color: theme.textColor
-
-                    Accessible.role: Accessible.StaticText
-                    Accessible.name: "welcomeMessage"
-                    Accessible.description: "Welcome message with username"
-                }
-            }
-        }
-
-        // Timetable View
-        TimetableView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            controller: root.controller
-        }
+        controller: root.controller
     }
 }

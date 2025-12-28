@@ -81,15 +81,13 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: theme.defaultPadding
-        spacing: theme.defaultPadding
+        spacing: 0
 
         // Header with week navigation
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
             color: "white"
-            radius: theme.cornerRadius
             border.color: theme.borderColor
             border.width: 1
 
@@ -168,17 +166,19 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: "white"
-            radius: theme.cornerRadius
             border.color: theme.borderColor
             border.width: 1
 
             ScrollView {
+                id: scrollView
                 anchors.fill: parent
                 anchors.margins: theme.defaultPadding
                 clip: true
+                ScrollBar.horizontal.policy: ScrollBar.AsNeeded
+                ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
                 ColumnLayout {
-                    width: parent.width
+                    width: Math.max(scrollView.width - 2 * theme.defaultPadding, 800)
                     spacing: 2
 
                     // Header row
@@ -490,11 +490,18 @@ Item {
             }
         }
 
-        standardButtons: Dialog.Save | Dialog.Close
+        standardButtons: Dialog.Save | Dialog.Discard | Dialog.Close
 
         onAccepted: {
             if (controller && taskIndex >= 0) {
                 controller.model.updateTaskNotes(taskIndex, workoutNotesArea.text)
+                controller.save()
+            }
+        }
+
+        onDiscarded: {
+            if (controller && taskIndex >= 0) {
+                controller.model.removeTask(taskIndex)
                 controller.save()
             }
         }
@@ -555,11 +562,18 @@ Item {
             }
         }
 
-        standardButtons: Dialog.Save | Dialog.Close
+        standardButtons: Dialog.Save | Dialog.Discard | Dialog.Close
 
         onAccepted: {
             if (controller && taskIndex >= 0) {
                 controller.model.updateTaskNotes(taskIndex, taskNotesArea.text)
+                controller.save()
+            }
+        }
+
+        onDiscarded: {
+            if (controller && taskIndex >= 0) {
+                controller.model.removeTask(taskIndex)
                 controller.save()
             }
         }
