@@ -293,7 +293,7 @@ Item {
 
                                             Rectangle {
                                                 width: parent.width
-                                                height: 18
+                                                height: parent.parent.tasks.length === 1 ? parent.height - 4 : 18
                                                 color: getTaskColor(modelData.taskType)
                                                 radius: 3
 
@@ -301,12 +301,15 @@ Item {
                                                     anchors.fill: parent
                                                     anchors.margins: 2
                                                     text: modelData.title
-                                                    font.pixelSize: 10
+                                                    font.pixelSize: parent.parent.parent.parent.tasks.length === 1 ? theme.fontSizeNormal : 10
                                                     color: "white"
                                                     elide: Text.ElideRight
                                                     verticalAlignment: Text.AlignVCenter
+                                                    horizontalAlignment: Text.AlignHCenter
                                                     font.bold: true
+                                                    wrapMode: Text.WordWrap
                                                 }
+                                            }
                                             }
                                         }
                                     }
@@ -486,11 +489,42 @@ Item {
                     font.pixelSize: theme.fontSizeNormal
                     wrapMode: TextArea.Wrap
                     readOnly: false
+                    width: parent.width
                 }
             }
         }
 
-        standardButtons: Dialog.Save | Dialog.Discard | Dialog.Close
+        standardButtons: Dialog.Save | Dialog.Close
+        
+        footer: DialogButtonBox {
+            Button {
+                text: "Delete"
+                DialogButtonBox.buttonRole: DialogButtonBox.DestructiveRole
+                
+                background: Rectangle {
+                    color: parent.pressed ? "#c0392b" : "#e74c3c"
+                    radius: 4
+                }
+                
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
+            
+            Button {
+                text: "Save"
+                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+            }
+            
+            Button {
+                text: "Cancel"
+                DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+            }
+        }
 
         onAccepted: {
             if (controller && taskIndex >= 0) {
@@ -499,10 +533,14 @@ Item {
             }
         }
 
-        onDiscarded: {
-            if (controller && taskIndex >= 0) {
-                controller.model.removeTask(taskIndex)
-                controller.save()
+        onRejected: {
+            // Handle custom button clicks
+            var clickedButton = arguments[0]
+            if (clickedButton && clickedButton.DialogButtonBox.buttonRole === DialogButtonBox.DestructiveRole) {
+                if (controller && taskIndex >= 0) {
+                    controller.model.removeTask(taskIndex)
+                    controller.save()
+                }
             }
         }
 
@@ -558,11 +596,42 @@ Item {
                     font.pixelSize: theme.fontSizeNormal
                     wrapMode: TextArea.Wrap
                     readOnly: false
+                    width: parent.width
                 }
             }
         }
 
-        standardButtons: Dialog.Save | Dialog.Discard | Dialog.Close
+        standardButtons: Dialog.Save | Dialog.Close
+        
+        footer: DialogButtonBox {
+            Button {
+                text: "Delete"
+                DialogButtonBox.buttonRole: DialogButtonBox.DestructiveRole
+                
+                background: Rectangle {
+                    color: parent.pressed ? "#c0392b" : "#e74c3c"
+                    radius: 4
+                }
+                
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
+            
+            Button {
+                text: "Save"
+                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+            }
+            
+            Button {
+                text: "Cancel"
+                DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+            }
+        }
 
         onAccepted: {
             if (controller && taskIndex >= 0) {
@@ -571,10 +640,14 @@ Item {
             }
         }
 
-        onDiscarded: {
-            if (controller && taskIndex >= 0) {
-                controller.model.removeTask(taskIndex)
-                controller.save()
+        onRejected: {
+            // Handle custom button clicks
+            var clickedButton = arguments[0]
+            if (clickedButton && clickedButton.DialogButtonBox.buttonRole === DialogButtonBox.DestructiveRole) {
+                if (controller && taskIndex >= 0) {
+                    controller.model.removeTask(taskIndex)
+                    controller.save()
+                }
             }
         }
 
