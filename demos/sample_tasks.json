@@ -1,0 +1,110 @@
+{
+  "tasks": [
+    {
+      "title": "Morning Workout",
+      "done": false,
+      "day": 1,
+      "hour": 6,
+      "taskType": "workout",
+      "notes": "30 min cardio + strength training\nFocus on upper body",
+      "dateTime": "2025-12-29T06:00:00.000Z"
+    },
+    {
+      "title": "Sprint Planning",
+      "done": false,
+      "day": 1,
+      "hour": 9,
+      "taskType": "meeting",
+      "notes": "Review backlog items\nPrioritize user stories",
+      "dateTime": "2025-12-29T09:00:00.000Z"
+    },
+    {
+      "title": "Evening Run",
+      "done": false,
+      "day": 2,
+      "hour": 18,
+      "taskType": "workout",
+      "notes": "5K run\nMaintain 6 min/km pace",
+      "dateTime": "2025-12-30T18:00:00.000Z"
+    },
+    {
+      "title": "Code Review Session",
+      "done": false,
+      "day": 3,
+      "hour": 14,
+      "taskType": "work",
+      "notes": "Review PRs from team members\nProvide constructive feedback",
+      "dateTime": "2025-12-31T14:00:00.000Z"
+    },
+    {
+      "title": "Team Standup",
+      "done": false,
+      "day": 4,
+      "hour": 10,
+      "taskType": "meeting",
+      "notes": "Daily sync with the team",
+      "dateTime": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "title": "Gym Session",
+      "done": false,
+      "day": 4,
+      "hour": 17,
+      "taskType": "workout",
+      "notes": "Lower body workout\nSquats, lunges, leg press",
+      "dateTime": "2026-01-01T17:00:00.000Z"
+    },
+    {
+      "title": "Sprint Review",
+      "done": false,
+      "day": 5,
+      "hour": 15,
+      "taskType": "meeting",
+      "notes": "Demo completed features\nGather feedback",
+      "dateTime": "2026-01-02T15:00:00.000Z"
+    },
+    {
+      "title": "Grocery Shopping",
+      "done": false,
+      "day": 6,
+      "hour": 10,
+      "taskType": "personal",
+      "notes": "Weekly groceries\nDon't forget fruits and vegetables",
+      "dateTime": "2026-01-03T10:00:00.000Z"
+    },
+    {
+      "title": "Morning Yoga",
+      "done": false,
+      "day": 6,
+      "hour": 8,
+      "taskType": "workout",
+      "notes": "1 hour yoga session\nFocus on flexibility and breathing",
+      "dateTime": "2026-01-03T08:00:00.000Z"
+    },
+    {
+      "title": "Meal Prep",
+      "done": false,
+      "day": 0,
+      "hour": 12,
+      "taskType": "personal",
+      "notes": "Prepare meals for the week\nHealthy, balanced options",
+      "dateTime": "2025-12-28T12:00:00.000Z"
+    },
+    {
+      "title": "Review Qt documentation",
+      "done": false,
+      "day": -1,
+      "hour": -1,
+      "taskType": "other",
+      "notes": ""
+    },
+    {
+      "title": "Update project README",
+      "done": false,
+      "day": -1,
+      "hour": -1,
+      "taskType": "other",
+      "notes": ""
+    }
+  ]
+}
