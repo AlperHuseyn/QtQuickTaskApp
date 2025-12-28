@@ -162,45 +162,50 @@ Item {
                 anchors.margins: theme.defaultPadding
                 clip: true
 
-                GridLayout {
-                    columns: 8  // 1 for hour labels + 7 days
-                    rowSpacing: 2
-                    columnSpacing: 2
+                ColumnLayout {
+                    width: parent.width
+                    spacing: 2
 
-                    // Header row - empty cell + day names
-                    Rectangle {
-                        Layout.preferredWidth: 60
-                        Layout.preferredHeight: 40
-                        color: theme.backgroundColor
-                        border.color: theme.borderColor
-                        border.width: 1
+                    // Header row
+                    RowLayout {
+                        spacing: 2
+                        Layout.fillWidth: true
 
-                        Text {
-                            anchors.centerIn: parent
-                            text: "Time"
-                            font.pixelSize: theme.fontSizeSmall
-                            font.bold: true
-                            color: theme.textColor
-                        }
-                    }
-
-                    Repeater {
-                        model: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                        
+                        // Time column header
                         Rectangle {
-                            Layout.fillWidth: true
-                            Layout.preferredWidth: 100
+                            Layout.preferredWidth: 60
                             Layout.preferredHeight: 40
-                            color: theme.primaryColor
+                            color: theme.backgroundColor
                             border.color: theme.borderColor
                             border.width: 1
 
                             Text {
                                 anchors.centerIn: parent
-                                text: modelData
-                                font.pixelSize: theme.fontSizeNormal
+                                text: "Time"
+                                font.pixelSize: theme.fontSizeSmall
                                 font.bold: true
-                                color: "white"
+                                color: theme.textColor
+                            }
+                        }
+
+                        // Day headers
+                        Repeater {
+                            model: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                            
+                            Rectangle {
+                                Layout.preferredWidth: 100
+                                Layout.preferredHeight: 40
+                                color: theme.primaryColor
+                                border.color: theme.borderColor
+                                border.width: 1
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData
+                                    font.pixelSize: theme.fontSizeNormal
+                                    font.bold: true
+                                    color: "white"
+                                }
                             }
                         }
                     }
@@ -211,6 +216,7 @@ Item {
 
                         RowLayout {
                             spacing: 2
+                            Layout.fillWidth: true
 
                             property int hour: 5 + index
 
@@ -243,7 +249,6 @@ Item {
 
                                 Rectangle {
                                     id: cellRect
-                                    Layout.fillWidth: true
                                     Layout.preferredWidth: 100
                                     Layout.preferredHeight: 60
                                     color: cellMouseArea.containsMouse ? "#f0f0f0" : "white"
