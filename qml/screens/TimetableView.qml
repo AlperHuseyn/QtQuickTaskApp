@@ -357,7 +357,6 @@ Item {
                 }
             }
         }
-    }
 
     // Dialog for adding new task
     Dialog {
